@@ -57,10 +57,10 @@ lightdark:
 # ---------------------------------------------------------------
 
 favicon:
-  small: /images/favicon-16x16-next.png
-  medium: /images/favicon-32x32-next.png
-  apple_touch_icon: /images/apple-touch-icon-next.png
-  safari_pinned_tab: /images/logo.svg
+  small: /images/8425151366_973633.png
+  medium: /images/8425151366_973633.png
+  apple_touch_icon: /images/8425151366_973633.png
+  safari_pinned_tab: /images/8425151366_973633.png
   #android_manifest: /manifest.json
 
 # Custom Logo (Warning: Do not support scheme Mist)
@@ -102,10 +102,10 @@ open_graph:
 # Value before `||` delimiter is the target link, value after `||` delimiter is the name of Font Awesome icon.
 # External url should start with http:// or https://
 menu:
-  #home: / || fa fa-home
-  #about: /about/ || fa fa-user
+  home: / || fa fa-home
+  about: /about/ || fa fa-user
   #tags: /tags/ || fa fa-tags
-  #categories: /categories/ || fa fa-th
+  categories: /categories/ || fa fa-th
   #archives: /archives/ || fa fa-archive
   #schedule: /schedule/ || fa fa-calendar
   #sitemap: /sitemap.xml || fa fa-sitemap
@@ -149,9 +149,9 @@ sidebar:
 # Sidebar Avatar
 avatar:
   # Replace the default image and set the url here.
-  url: #/images/avatar.gif
+  url: /images/8425151366_973633.png
   # If true, the avatar will be displayed in circle.
-  rounded: false
+  rounded: true
   # If true, the avatar will be rotated with the cursor.
   rotated: false
 
@@ -211,11 +211,11 @@ footer:
   # Icon between year and copyright info.
   icon:
     # Icon name in Font Awesome. See: https://fontawesome.com/icons
-    name: fa fa-heart
+    name: fa-brands fa-duolingo
     # If you want to animate the icon, set it to true.
     animated: false
     # Change the color of icon, using Hex Code.
-    color: "#ff0000"
+    color: "#58CC02"
 
   # If not defined, `author` from Hexo `_config.yml` will be used.
   # Set to `false` to disable the copyright statement.
@@ -442,8 +442,8 @@ font:
 
   # Global font settings used for all elements inside <body>.
   global:
-    external: false
-    family: 思源宋体, Avenir Next, Avenir, Helvetica, Arial, sans-serif
+    external: true
+    family: Noto Serif SC
     size: 1
 
   # Font settings for <code> and code blocks.
