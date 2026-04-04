@@ -164,7 +164,7 @@ site_state: true
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
   E-Mail: mailto:kostya.sheng@icloud.com || fa fa-envelope
-  少数派SSPAI: https://sspai.com/u/kostya/posts || fa fa-apple
+  少数派SSPAI: https://sspai.com/u/kostya/posts || fa-brands fa-apple
   Instagram: https://instagram.com/shengkostya || fab fa-instagram
   Telegram: https://t.me/shengkostya || fab fa-telegram
 
