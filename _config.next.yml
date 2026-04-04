@@ -47,7 +47,7 @@ darkmode: true
 
 # Light-Dark Mode
 lightdark:
-  enable: false
+  enable: true
   # Add @supports (color: light-dark(red, red)) check
   check_supports: true
 
@@ -163,15 +163,10 @@ site_state: true
 # Key is the link label showing to end users.
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
-  #GitHub: https://github.com/yourname || fab fa-github
-  #E-Mail: mailto:yourname@gmail.com || fa fa-envelope
-  #Weibo: https://weibo.com/yourname || fab fa-weibo
-  #Twitter: https://twitter.com/yourname || fab fa-twitter
-  #FB Page: https://www.facebook.com/yourname || fab fa-facebook
-  #StackOverflow: https://stackoverflow.com/yourname || fab fa-stack-overflow
-  #YouTube: https://youtube.com/yourname || fab fa-youtube
-  #Instagram: https://instagram.com/yourname || fab fa-instagram
-  #Skype: skype:yourname?call|chat || fab fa-skype
+  E-Mail: mailto:kostya.sheng@icloud.com || fa fa-envelope
+  少数派SSPAI: https://sspai.com/u/kostya/posts || fa fa-apple
+  Instagram: https://instagram.com/shengkostya || fab fa-instagram
+  Telegram: https://t.me/shengkostya || fab fa-telegram
 
 social_icons:
   enable: true
@@ -435,10 +430,10 @@ github_banner:
 # ---------------------------------------------------------------
 
 font:
-  enable: false
+  enable: true
 
   # Uri of fonts host, e.g. https://fonts.googleapis.com (Default).
-  host:
+  host: https://fonts.googleapis.com
 
   # Font options:
   # `external: true` will load this font family from `host` above.
@@ -447,31 +442,15 @@ font:
 
   # Global font settings used for all elements inside <body>.
   global:
-    external: true
-    family: Lato
-    size:
-
-  # Font settings for site title (.site-title).
-  title:
-    external: true
-    family:
-    size:
-
-  # Font settings for headlines (<h1> to <h6>).
-  headings:
-    external: true
-    family:
-    size:
-
-  # Font settings for posts (.post-body).
-  posts:
-    external: true
-    family:
+    external: false
+    family: 思源宋体, Avenir Next, Avenir, Helvetica, Arial, sans-serif
+    size: 1
 
   # Font settings for <code> and code blocks.
   codes:
     external: true
-    family:
+    family: PT Mono, monospace
+    size: 0.95
 
 
 # ---------------------------------------------------------------
