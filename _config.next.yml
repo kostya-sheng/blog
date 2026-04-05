@@ -56,11 +56,11 @@ lightdark:
 # Site Information Settings
 # ---------------------------------------------------------------
 
-favicon:
-  small: /images/8425151366_973633.png
-  medium: /images/8425151366_973633.png
-  apple_touch_icon: /images/8425151366_973633.png
-  safari_pinned_tab: /images/8425151366_973633.png
+#favicon:
+  #small: /images/8425151366_973633.png
+  #medium: /images/8425151366_973633.png
+  #apple_touch_icon: /images/8425151366_973633.png
+  #safari_pinned_tab: /images/8425151366_973633.png
   #android_manifest: /manifest.json
 
 # Custom Logo (Warning: Do not support scheme Mist)
