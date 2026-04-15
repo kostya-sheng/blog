@@ -9,7 +9,7 @@ categories: 速记
 
 我也亲自体验了一下这个测试过程。整体感觉整套题测下来，肯定还是有一定的指向性，并非完全不科学。结果我竟然是 **THIN-K 思考者**。一发朋友圈，不少人还觉得，挺像。
 
-{% asset-img share-card.png %}
+{% asset_img share-card.png %}
 
 <!--more-->
 
