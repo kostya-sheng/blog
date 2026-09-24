@@ -3,14 +3,16 @@
 // Typography
 // --------------------------------------------------
 // Wrapped titles get lines of even length instead of a lone character on the
-// last line, and paragraphs avoid ending on a single character.
-// Browsers without text-wrap support ignore these.
+// last line. Browsers without text-wrap support ignore this.
+// No text-wrap: pretty on paragraphs: Safari re-breaks the whole paragraph
+// for it, and with justified text that blows up the spacing inside lines.
 .posts-expand .post-title, .post-body h1, .post-body h2, .post-body h3, .post-body h4, .post-body h5, .post-body h6 {
   text-wrap: balance;
 }
 
-.post-body p {
-  text-wrap: pretty;
+// Headings would inherit justify from .post-body and stretch their balanced lines.
+.post-body h1, .post-body h2, .post-body h3, .post-body h4, .post-body h5, .post-body h6 {
+  text-align: start;
 }
 
 // Phones: less empty space between the post title and the text.
