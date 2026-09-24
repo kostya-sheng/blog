@@ -344,7 +344,9 @@ preconnect: true
 text_align:
   # Available values: start | end | left | right | center | justify | justify-all | match-parent
   desktop: justify
-  mobile: justify
+  # A phone line holds only ~20 characters: when an English word or link does not
+  # fit, justify spreads the leftover space between every character of the line.
+  mobile: start
 
 # Reduce padding / margin indents on devices with narrow width.
 mobile_layout_economy: false
