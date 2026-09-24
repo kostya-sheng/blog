@@ -27,9 +27,9 @@ custom_file_path:
   #postBodyEnd: source/_data/post-body-end.njk
   #footer: source/_data/footer.njk
   #bodyEnd: source/_data/body-end.njk
-  #variable: source/_data/variables.styl
+  variable: source/_data/variables.styl
   #mixin: source/_data/mixins.styl
-  #style: source/_data/styles.styl
+  style: source/_data/styles.styl
 
 
 # ---------------------------------------------------------------
@@ -338,7 +338,7 @@ calendar:
 
 # Preload styles and preconnect CDN for fonts and plugins.
 # For more information: https://www.w3.org/TR/resource-hints/#preconnect
-preconnect: false
+preconnect: true
 
 # Set the text alignment in posts / pages.
 text_align:
@@ -431,7 +431,8 @@ font:
   enable: true
 
   # Uri of fonts host, e.g. https://fonts.googleapis.com (Default).
-  host: https://fonts.googleapis.com
+  # scripts/non-blocking-fonts.js keeps a slow or unreachable host from blanking the page.
+  host: https://fonts.font.im
 
   # Font options:
   # `external: true` will load this font family from `host` above.
@@ -439,15 +440,29 @@ font:
   # `size: x.x`. Use `em` as unit. Default: 1 (16px)
 
   # Global font settings used for all elements inside <body>.
+  # Site title, menu and sidebar; Chinese text there falls back to PingFang SC / Microsoft YaHei.
   global:
     external: true
-    family: Quicksand, Noto Serif SC
+    family: Quicksand
     size: 1
+
+  # Font settings for headlines (<h1> to <h6>).
+  # Noto Serif has real italics and matches Noto Serif SC. Avoid family names
+  # containing digits (e.g. Source Serif 4): NexT writes them into CSS unquoted,
+  # which makes the browser drop the whole font-family declaration.
+  headings:
+    external: true
+    family: Noto Serif, Noto Serif SC
+
+  # Font settings for posts (.post-body).
+  posts:
+    external: true
+    family: Noto Serif, Noto Serif SC
 
   # Font settings for <code> and code blocks.
   codes:
     external: true
-    family: PT Mono, monospace
+    family: PT Mono
     size: 0.95
 
 

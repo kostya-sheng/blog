@@ -1,0 +1,70 @@
+// Custom styles, loaded after NexT's own (custom_file_path.style in _config.next.yml).
+
+// Typography
+// --------------------------------------------------
+// Wrapped titles get lines of even length instead of a lone character on the
+// last line, and paragraphs avoid ending on a single character.
+// Browsers without text-wrap support ignore these.
+.posts-expand .post-title, .post-body h1, .post-body h2, .post-body h3, .post-body h4, .post-body h5, .post-body h6 {
+  text-wrap: balance;
+}
+
+.post-body p {
+  text-wrap: pretty;
+}
+
+// Phones: less empty space between the post title and the text.
++mobile() {
+  .posts-expand .post-header {
+    margin-bottom: 30px;
+  }
+
+  .posts-expand .post-title {
+    font-size: 1.375em;
+  }
+}
+
+// Post images
+// --------------------------------------------------
+.post-body {
+  // Keep portrait photos and phone screenshots within one screen.
+  img {
+    max-height: 80vh;
+  }
+
+  // Captions come from the image title, see scripts/post-images.js.
+  figure.post-figure {
+    margin: 0 auto 25px;
+
+    img {
+      margin-bottom: 0;
+    }
+
+    figcaption {
+      color: var(--blockquote-color);
+      font-size: $font-size-smaller;
+      font-weight: normal;
+      line-height: 1.6;
+      margin: 10px auto 0;
+    }
+  }
+
+  // Images written on the same line sit side by side.
+  .post-image-row {
+    align-items: flex-start;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+
+    > img, > figure.post-figure {
+      flex: 1 1 0;
+      margin: 0;
+      min-width: 0;
+    }
+
+    img {
+      margin-bottom: 0;
+      object-fit: contain;
+    }
+  }
+}
