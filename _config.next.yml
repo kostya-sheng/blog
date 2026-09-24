@@ -338,7 +338,7 @@ calendar:
 
 # Preload styles and preconnect CDN for fonts and plugins.
 # For more information: https://www.w3.org/TR/resource-hints/#preconnect
-preconnect: false
+preconnect: true
 
 # Set the text alignment in posts / pages.
 text_align:
@@ -431,6 +431,7 @@ font:
   enable: true
 
   # Uri of fonts host, e.g. https://fonts.googleapis.com (Default).
+  # scripts/non-blocking-fonts.js keeps a slow or unreachable host from blanking the page.
   host: https://fonts.googleapis.com
 
   # Font options:
