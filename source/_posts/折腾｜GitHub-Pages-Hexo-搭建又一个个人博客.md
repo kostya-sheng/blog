@@ -63,7 +63,7 @@ GitHub Pages 实际上是一个非常好用的托管网页的服务；它可以�
 
 整体来说，使用 Visual Studio Code 来管理和维护基于 GitHub Pages 的博客是非常高效的选择。
 
-{% image-20260406133638911.png %}
+{% asset_img image-20260406133638911.png %}
 
 ## Markdown 编辑器：Typora
 
