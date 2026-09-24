@@ -439,15 +439,29 @@ font:
   # `size: x.x`. Use `em` as unit. Default: 1 (16px)
 
   # Global font settings used for all elements inside <body>.
+  # Site title, menu and sidebar; Chinese text there falls back to PingFang SC / Microsoft YaHei.
   global:
     external: true
-    family: Quicksand, Noto Serif SC
+    family: Quicksand
     size: 1
+
+  # Font settings for headlines (<h1> to <h6>).
+  # Noto Serif has real italics and matches Noto Serif SC. Avoid family names
+  # containing digits (e.g. Source Serif 4): NexT writes them into CSS unquoted,
+  # which makes the browser drop the whole font-family declaration.
+  headings:
+    external: true
+    family: Noto Serif, Noto Serif SC
+
+  # Font settings for posts (.post-body).
+  posts:
+    external: true
+    family: Noto Serif, Noto Serif SC
 
   # Font settings for <code> and code blocks.
   codes:
     external: true
-    family: PT Mono, monospace
+    family: PT Mono
     size: 0.95
 
 
