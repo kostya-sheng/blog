@@ -83,7 +83,9 @@ meta_generator: true
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
 ## updated_option supports 'mtime', 'date', 'empty'
-updated_option: 'mtime'
+## 'date': GitHub Actions checks out every file fresh, so 'mtime' would stamp every
+## post with the build date. Set `updated:` in a post's front-matter when it really changes.
+updated_option: 'date'
 
 # Pagination
 ## Set per_page to 0 to disable pagination
