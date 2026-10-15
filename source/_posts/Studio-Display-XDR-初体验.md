@@ -5,6 +5,10 @@ tags: [3C, 测评]
 categories: 速记
 ---
 
+{% asset_img post-banner banner.svg %}
+
+---
+
 *update*：Studio Display XDR 固件 26.4 看起来貌似修复了自适应刷新率会导致 kernel panic 的问题。
 
 上周三自提了（有条件请不要自提，不然真的是堪比健身）Studio Display XDR。简单体验下来，以下几点供大家参考：
@@ -24,5 +28,3 @@ categories: 速记
 总之，确实算得上是各方面都拉满的显示器体验，不过自适应刷新率的稳定性还需增强（估计 macOS 或者显示器的后续固件版本会 acknowledge 并修复这个问题）。5K 120Hz HDR 显示器，目前在售的款式很少、价格其实也都已经到了这个位置，如果希望获得最佳体验，Studio Display XDR 值得一试。
 
 {% asset_img shown_with_severance.jpg %}
-
-{% asset_img banner.svg %}

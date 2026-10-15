@@ -5,6 +5,10 @@ tags: [车, 生活, 流水账]
 categories: 速记
 ---
 
+{% asset_img post-banner banner.svg %}
+
+---
+
 上周六（5月30号），也是拥有了人生中第一辆车～Tesla Model Y，又称「大鼠标」（至于是善良还是邪恶，还是要看人啊哈哈）。买车的想法已经延续了大半年，从年前开始就在试驾，选来选去，最后还是觉得 Model Y 是我的心头好。这篇文章主要记录一下目前在用车方面的费用、配置、配件，当然还有一些一句话体验。
 
 {% asset_img IDG_20260530_111655_361.JPG %}
@@ -78,5 +82,3 @@ categories: 速记
 至于给车起什么名字，我问了问 Claude，它说结合我的 Kostya 这个 K 开头的名字，可以考虑 Kestrel —— 精准、迅速、灵巧的红隼 —— 作为名字。所以我暂时是给它 Kestrel Juniper 这个名字，如果以后想到什么更好的，再说！顺便让 Claude Design 帮我设计了一套喷漆：
 
 {% asset_img IMG_3400.PNG %}
-
-{% asset_img banner.svg %}

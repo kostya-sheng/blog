@@ -6,6 +6,10 @@ categories: 影视
 
 ---
 
+{% asset_img post-banner banner.svg %}
+
+---
+
 ## *Shrinking*, featuring Jason Segel and ... Harrison Ford?
 
 说实话，我第一次看到《Shrinking》这部电视剧的海报时，简直不敢相信自己的眼睛。
@@ -96,4 +100,3 @@ Paul 逐渐走向了更加积极、乐观面对疾病的状态。他发现自己
 
 不知道大家有没有什么关于 Shrinking 这部剧的想法？有没有人和我一样喜欢这部剧呢？欢迎跟我交流。
 
-{% asset_img banner.svg %}
