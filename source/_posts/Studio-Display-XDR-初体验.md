@@ -5,6 +5,10 @@ tags: [3C, 测评]
 categories: 速记
 ---
 
+{% asset_img post-banner banner.svg %}
+
+---
+
 *update*：Studio Display XDR 固件 26.4 看起来貌似修复了自适应刷新率会导致 kernel panic 的问题。
 
 上周三自提了（有条件请不要自提，不然真的是堪比健身）Studio Display XDR。简单体验下来，以下几点供大家参考：

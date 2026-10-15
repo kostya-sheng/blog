@@ -6,6 +6,10 @@ categories: 长文
 
 ---
 
+{% asset_img post-banner banner.svg %}
+
+---
+
 {% asset_img image-20260406141049916.png %}
 
 一直以来好像都缺一个能够高度自定义定制化的博客。直到最近才了解到 GitHub Pages 的易用性，着实是有点过于火星人了。契机是需要一个静态网页的免费（低成本）存储空间，可以用来做一些试验性的 projects；后来就想着，为什么不干脆利用 GitHub Pages 搭一个博客呢？

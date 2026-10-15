@@ -5,6 +5,10 @@ tags: 新玩意
 category: 速记
 ---
 
+{% asset_img post-banner banner.svg %}
+
+---
+
 - 购买渠道：45minup 集合店
 - 购买价格：2399 元（+送椅套）
 

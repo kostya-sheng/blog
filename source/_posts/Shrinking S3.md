@@ -6,6 +6,10 @@ categories: 影视
 
 ---
 
+{% asset_img post-banner banner.svg %}
+
+---
+
 ## *Shrinking*, featuring Jason Segel and ... Harrison Ford?
 
 说实话，我第一次看到《Shrinking》这部电视剧的海报时，简直不敢相信自己的眼睛。

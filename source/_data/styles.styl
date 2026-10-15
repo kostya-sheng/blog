@@ -70,3 +70,29 @@
     }
   }
 }
+
+// Post banners
+// --------------------------------------------------
+// Each post opens with `{% asset_img post-banner banner.svg %}` and a `---` divider.
+.post-body img.post-banner {
+  width: 100%;
+
+  // Keep the divider close, so banner and divider read as one header.
+  + hr {
+    margin-top: 20px;
+  }
+}
+
+// Phones: at text width the 8:1 banner is under 50px tall. Run it edge to edge
+// and crop it to 28:5 from the left, keeping the right side where the main
+// illustration sits.
++mobile() {
+  .post-body img.post-banner {
+    aspect-ratio: 28 / 5;
+    margin-left: calc(50% - 50vw);
+    max-width: none;
+    object-fit: cover;
+    object-position: right center;
+    width: 100vw;
+  }
+}
