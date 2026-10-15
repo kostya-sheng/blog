@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 200" width="1600" height="200" role="img" aria-label="折腾｜GitHub Pages + Hexo 搭建又一个个人博客 · 题图">
+<title>折腾｜GitHub Pages + Hexo 搭建又一个个人博客 · 题图</title>
+<style>
+.t1{fill:#f1f3f5}.t2{fill:#e4e8eb}.as{fill:#ffe9de}.gs{fill:#e5f4d8}
+.pop{fill:#fc6423}.sp{fill:#58cc02}
+.st{stroke:#cfd5da}.st2{stroke:#e4e8eb}.ss{stroke:#bfe3a0}.sa{stroke:#ffd2bd}
+.ink{fill:#cfd5da}
+@media (prefers-color-scheme:dark){
+.t1{fill:#3a3a3a}.t2{fill:#434343}.as{fill:#4a2e22}.gs{fill:#33422a}
+.pop{fill:#e2591d}.sp{fill:#4fa81a}
+.st{stroke:#5a5f63}.st2{stroke:#434343}.ss{stroke:#4c6b37}.sa{stroke:#6a3a26}
+.ink{fill:#5a5f63}}
+.n{fill:none}.r{stroke-linecap:round;stroke-linejoin:round}
+</style>
+<path class="n st r" stroke-width="2" d="M70 110 H930"/><path class="n st r" stroke-width="2" d="M340 110 C380 110 380 62 420 62 H560 C600 62 600 110 640 110"/><circle class="t2" cx="70" cy="110" r="8"/><circle class="n st" stroke-width="1.2" cx="70" cy="110" r="8"/><circle class="t2" cx="156" cy="110" r="8"/><circle class="n st" stroke-width="1.2" cx="156" cy="110" r="8"/><circle class="t2" cx="242" cy="110" r="8"/><circle class="n st" stroke-width="1.2" cx="242" cy="110" r="8"/><circle class="t2" cx="328" cy="110" r="8"/><circle class="n st" stroke-width="1.2" cx="328" cy="110" r="8"/><circle class="t2" cx="414" cy="110" r="8"/><circle class="n st" stroke-width="1.2" cx="414" cy="110" r="8"/><circle class="t2" cx="500" cy="110" r="8"/><circle class="n st" stroke-width="1.2" cx="500" cy="110" r="8"/><circle class="t2" cx="586" cy="110" r="8"/><circle class="n st" stroke-width="1.2" cx="586" cy="110" r="8"/><circle class="t2" cx="672" cy="110" r="8"/><circle class="n st" stroke-width="1.2" cx="672" cy="110" r="8"/><circle class="t2" cx="758" cy="110" r="8"/><circle class="n st" stroke-width="1.2" cx="758" cy="110" r="8"/><circle class="t2" cx="844" cy="110" r="8"/><circle class="n st" stroke-width="1.2" cx="844" cy="110" r="8"/><circle class="t2" cx="930" cy="110" r="8"/><circle class="n st" stroke-width="1.2" cx="930" cy="110" r="8"/><circle class="gs" cx="450" cy="62" r="8"/><circle class="n ss" stroke-width="1.2" cx="450" cy="62" r="8"/><circle class="gs" cx="530" cy="62" r="8"/><circle class="n ss" stroke-width="1.2" cx="530" cy="62" r="8"/><circle class="sp" cx="932" cy="110" r="5"/><path class="n st r" stroke-width="1.5" stroke-dasharray="4 7" d="M960 110 H1060"/><rect class="t1" x="1080" y="36" width="420" height="132" rx="6"/><path class="t2" d="M1086 36 H1494 A6 6 0 0 1 1500 42 V56 H1080 V42 A6 6 0 0 1 1086 36 Z"/><rect class="n st" stroke-width="1.2" x="1080" y="36" width="420" height="132" rx="6"/><circle class="ink" cx="1096" cy="46" r="3"/><circle class="ink" cx="1110" cy="46" r="3"/><circle class="ink" cx="1124" cy="46" r="3"/><rect class="ink" x="1100" y="76" width="220" height="8" rx="3"/><rect class="t2" x="1100" y="98" width="360" height="6" rx="3"/><rect class="t2" x="1100" y="114" width="330" height="6" rx="3"/><rect class="t2" x="1100" y="130" width="350" height="6" rx="3"/><rect class="t2" x="1100" y="146" width="180" height="6" rx="3"/>
+</svg>

@@ -78,3 +78,5 @@ categories: 速记
 至于给车起什么名字，我问了问 Claude，它说结合我的 Kostya 这个 K 开头的名字，可以考虑 Kestrel —— 精准、迅速、灵巧的红隼 —— 作为名字。所以我暂时是给它 Kestrel Juniper 这个名字，如果以后想到什么更好的，再说！顺便让 Claude Design 帮我设计了一套喷漆：
 
 {% asset_img IMG_3400.PNG %}
+
+{% asset_img banner.svg %}

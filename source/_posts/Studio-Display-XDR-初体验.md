@@ -24,3 +24,5 @@ categories: 速记
 总之，确实算得上是各方面都拉满的显示器体验，不过自适应刷新率的稳定性还需增强（估计 macOS 或者显示器的后续固件版本会 acknowledge 并修复这个问题）。5K 120Hz HDR 显示器，目前在售的款式很少、价格其实也都已经到了这个位置，如果希望获得最佳体验，Studio Display XDR 值得一试。
 
 {% asset_img shown_with_severance.jpg %}
+
+{% asset_img banner.svg %}

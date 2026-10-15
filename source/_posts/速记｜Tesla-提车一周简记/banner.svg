@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 200" width="1600" height="200" role="img" aria-label="速记｜Tesla 提车一周简记 · 题图">
+<title>速记｜Tesla 提车一周简记 · 题图</title>
+<style>
+.t1{fill:#f1f3f5}.t2{fill:#e4e8eb}.as{fill:#ffe9de}.gs{fill:#e5f4d8}
+.pop{fill:#fc6423}.sp{fill:#58cc02}
+.st{stroke:#cfd5da}.st2{stroke:#e4e8eb}.ss{stroke:#bfe3a0}.sa{stroke:#ffd2bd}
+.ink{fill:#cfd5da}
+@media (prefers-color-scheme:dark){
+.t1{fill:#3a3a3a}.t2{fill:#434343}.as{fill:#4a2e22}.gs{fill:#33422a}
+.pop{fill:#e2591d}.sp{fill:#4fa81a}
+.st{stroke:#5a5f63}.st2{stroke:#434343}.ss{stroke:#4c6b37}.sa{stroke:#6a3a26}
+.ink{fill:#5a5f63}}
+.n{fill:none}.r{stroke-linecap:round;stroke-linejoin:round}
+</style>
+<path class="n st2" stroke-width="1.5" d="M0 152 H1600"/><path class="n st r" stroke-width="2" stroke-dasharray="26 18" d="M0 176 H1600"/><rect class="n st" stroke-width="1.5" x="150" y="70" width="150" height="48" rx="8"/><rect class="gs" x="157" y="77" width="109" height="34" rx="4"/><rect class="t2" x="300" y="84" width="8" height="20" rx="2"/><path class="sp" d="M214 80 L200 98 H210 L206 110 L222 90 H212 Z"/><path class="n st2 r" stroke-width="2" d="M880 98 H1060"/><path class="n st2 r" stroke-width="2" d="M894 112 H1060"/><path class="n st2 r" stroke-width="2" d="M908 126 H1060"/><path class="t1" d="M1100 140 C1100 104 1170 78 1255 78 C1340 78 1410 104 1410 140 Z"/><path class="n st" stroke-width="1.5" d="M1100 140 C1100 104 1170 78 1255 78 C1340 78 1410 104 1410 140 Z"/><path class="t2" d="M1170 104 C1190 92 1220 86 1255 86 C1290 86 1320 92 1340 104 Z"/><circle class="t2" cx="1162" cy="140" r="15"/><circle class="n st" stroke-width="1.2" cx="1162" cy="140" r="15"/><circle class="t2" cx="1348" cy="140" r="15"/><circle class="n st" stroke-width="1.2" cx="1348" cy="140" r="15"/>
+</svg>
