@@ -7,6 +7,7 @@
 //   Titles that only repeat the file name (Typora fills them in on paste) stay hidden.
 // - Images written on the same line (`{% asset_img a.jpg %} {% asset_img b.jpg %}`) sit side by side.
 // - Every post image is lazy-loaded by the browser.
+// - Long images (`{% asset_img post-long chart.png %}`) link to the full-size file.
 
 const { unescapeHTML } = require('hexo-util');
 
@@ -38,6 +39,12 @@ const toFigure = tag => {
   return `<figure class="post-figure">${image}<figcaption>${title}</figcaption></figure>`;
 };
 
+const linkLong = tag => {
+  if (!/\sclass="[^"]*\bpost-long\b/.test(tag)) return tag;
+  const src = getAttr(tag, 'src') || getAttr(tag, 'data-src');
+  return src ? `<a class="post-long-link" href="${src}" target="_blank" rel="noopener">${tag}</a>` : tag;
+};
+
 // Priority 9 runs before Hexo's excerpt filter, so the home page gets the same markup.
 hexo.extend.filter.register('after_post_render', data => {
   data.content = data.content
@@ -45,6 +52,7 @@ hexo.extend.filter.register('after_post_render', data => {
     .replace(rImageLine, (line, images) => {
       const items = images.match(rImage).map(toFigure);
       return items.length > 1 ? `<div class="post-image-row">${items.join('')}</div>` : items[0];
-    });
+    })
+    .replace(rImage, linkLong);
   return data;
 }, 9);

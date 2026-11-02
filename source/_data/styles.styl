@@ -57,6 +57,32 @@
     width: 100%;
   }
 
+  // ...and link to the full-size file (scripts/post-images.js).
+  a.post-long-link {
+    border-bottom: none;
+    cursor: zoom-in;
+    display: block;
+    margin-bottom: 25px;
+
+    img {
+      margin-bottom: 0;
+    }
+
+    &::after {
+      color: var(--blockquote-color);
+      content: '点击查看原图';
+      display: block;
+      font-size: $font-size-smaller;
+      line-height: 1.6;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    &:hover::after {
+      color: var(--link-hover-color);
+    }
+  }
+
   // Captions come from the image title, see scripts/post-images.js.
   figure.post-figure {
     margin: 0 auto 25px;
