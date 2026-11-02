@@ -86,7 +86,7 @@ categories: 速记
 
 ## 一图看完
 
-{% asset_img apple-display-names.png Apple 显示屏命名图谱 %}
+{% asset_img post-long apple-display-names.png Apple 显示屏命名图谱 %}
 
 ## 来源
 

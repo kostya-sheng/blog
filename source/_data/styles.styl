@@ -50,6 +50,13 @@
     max-height: 80vh;
   }
 
+  // Long infographics opt out of the cap and fill the text width:
+  // `{% asset_img post-long chart.png "Caption" %}`.
+  img.post-long {
+    max-height: none;
+    width: 100%;
+  }
+
   // Captions come from the image title, see scripts/post-images.js.
   figure.post-figure {
     margin: 0 auto 25px;
