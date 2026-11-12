@@ -1,0 +1,4 @@
+# Labels for custom menu items (keys from `menu` in _config.next.yml).
+zh-CN:
+  menu:
+    typing: 键上追击

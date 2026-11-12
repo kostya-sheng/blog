@@ -145,3 +145,30 @@
     width: 100vw;
   }
 }
+
+// Menu: game entry
+// --------------------------------------------------
+// The keyboard icon "types" (two quick key taps) when the entry is hovered.
+.menu-item-typing a:hover i {
+  animation: menu-typing-tap .55s ease-in-out;
+}
+
+@keyframes menu-typing-tap {
+  0%, 50%, 100% {
+    transform: none;
+  }
+
+  25% {
+    transform: translateY(3px) rotate(-8deg);
+  }
+
+  75% {
+    transform: translateY(3px) rotate(8deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-item-typing a:hover i {
+    animation: none;
+  }
+}
