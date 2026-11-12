@@ -145,3 +145,36 @@
     width: 100vw;
   }
 }
+
+// Menu: game entry
+// --------------------------------------------------
+// When the entry is hovered, the keyboard icon turns the game's amber and
+// "types" (two quick key taps). The amber reads on both the light and the dark menu.
+.menu-item-typing a i {
+  transition: color .2s;
+}
+
+.menu-item-typing a:hover i {
+  animation: menu-typing-tap .55s ease-in-out;
+  color: #f0a020;
+}
+
+@keyframes menu-typing-tap {
+  0%, 50%, 100% {
+    transform: none;
+  }
+
+  25% {
+    transform: translateY(3px) rotate(-8deg);
+  }
+
+  75% {
+    transform: translateY(3px) rotate(8deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-item-typing a:hover i {
+    animation: none;
+  }
+}
