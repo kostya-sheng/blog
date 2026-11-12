@@ -148,9 +148,15 @@
 
 // Menu: game entry
 // --------------------------------------------------
-// The keyboard icon "types" (two quick key taps) when the entry is hovered.
+// When the entry is hovered, the keyboard icon turns the game's amber and
+// "types" (two quick key taps). The amber reads on both the light and the dark menu.
+.menu-item-typing a i {
+  transition: color .2s;
+}
+
 .menu-item-typing a:hover i {
   animation: menu-typing-tap .55s ease-in-out;
+  color: #f0a020;
 }
 
 @keyframes menu-typing-tap {
