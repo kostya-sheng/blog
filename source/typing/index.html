@@ -65,11 +65,11 @@ kbd { font: 600 12px ui-monospace, Menlo, monospace; padding: 2px 6px; border-ra
 .tip b { color: #ffd166; }
 .need { margin-top: 12px; font-size: 13px; color: #b9bbd6; min-height: 1.5em; }
 #next, #again { background: #ffd166; }
-#start, #again, #back, #next, #sharebox .row button { margin-top: 22px; padding: 14px 34px; border: 0; border-radius: 12px;
+#start, #again, #back, #next, #sharebox .row button, #chalbox .row button, #chal-banner button { margin-top: 22px; padding: 14px 34px; border: 0; border-radius: 12px;
   font: 700 18px inherit; font-family: inherit; cursor: pointer; color: #2b1d00; background: #ffd166;
   box-shadow: 0 5px 0 #b5651d; transition: transform .08s, box-shadow .08s; }
 #start:active, #again:active, #back:active, #next:active { transform: translateY(3px); box-shadow: 0 2px 0 #b5651d; }
-#again.ghost, #back.ghost, #sharebox .row button.ghost { background: rgba(255,255,255,.1); color: #f4f1ea; box-shadow: 0 5px 0 rgba(0,0,0,.35); }
+#again.ghost, #back.ghost, #sharebox .row button.ghost, #chalbox .row button.ghost, #chal-banner button.ghost { background: rgba(255,255,255,.1); color: #f4f1ea; box-shadow: 0 5px 0 rgba(0,0,0,.35); }
 .row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 .tip { margin-top: 16px; font-size: 12.5px; color: #8f93b8; }
 .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 10px; margin-top: 24px; }
@@ -313,6 +313,33 @@ html.kb-frozen .key { background: #3d6a80; color: #bfe9ff; }
 #sharebox .row button { margin-top: 12px; padding: 12px 22px; font-size: 16px; }
 #share-msg { margin-top: 10px; }
 
+/* ---------- 幽灵与挑战链接 ---------- */
+#m-ghost { background: rgba(191,244,255,.35); border-color: rgba(191,244,255,.8); width: 14px; height: 14px; margin: -7px 0 0 -7px; }
+#m-ghost::after { content: "👻"; top: 13px; font-size: 11px; }
+#ghostchip { position: absolute; top: 84px; right: max(14px, calc(50% - 490px)); padding: 5px 14px; border-radius: 999px;
+  font-size: 13px; font-weight: 600; color: #bff4ff; background: rgba(20,22,48,.72); border: 1px solid rgba(191,244,255,.35); }
+#ghostchip.behind { color: #ffb3b3; border-color: rgba(255,141,141,.45); }
+#hud.ending #ghostchip, #hud.zen #ghostchip, #hud.zen #m-ghost { display: none; }
+#r-ghost { margin-top: 14px; font-size: 15px; color: #bff4ff; }
+#r-ghost:empty { display: none; }
+#r-ghost b { color: #fff; }
+#chal-banner { margin: 16px 0 4px; padding: 14px 18px 18px; border-radius: 14px; border: 2px solid #ffd166;
+  background: rgba(255,209,102,.1); }
+#chal-info { font-size: 13.5px; line-height: 1.7; color: #d9dbee; }
+#chal-info b { color: #ffd166; }
+#chal-info b:first-child { display: block; font-size: 17px; margin-bottom: 2px; }
+#chal-banner button { margin-top: 12px; padding: 10px 24px; font-size: 16px; }
+#chalbox { z-index: 30; background: rgba(8,9,22,.82); }
+#chalbox .panel { width: min(520px, 100%); padding: 24px; }
+#chalbox h1 { font-size: 30px; }
+#chal-name, #chal-link { display: block; width: 100%; margin-top: 12px; padding: 10px 12px; border-radius: 10px;
+  border: 2px solid rgba(255,255,255,.12); background: rgba(0,0,0,.25); color: #f4f1ea; font: inherit; font-size: 14px; }
+#chal-link { resize: none; font: 12px ui-monospace, Menlo, Consolas, monospace; color: #b9bbd6; word-break: break-all; }
+#chal-name:focus, #chal-link:focus { outline: none; border-color: #ffd166; }
+#chalbox .row button { margin-top: 12px; padding: 12px 22px; font-size: 16px; }
+html.touch #chal-name, html.touch #chal-link { -webkit-user-select: text; user-select: text; font-size: 16px; }
+@media (max-width: 700px) { #ghostchip { top: auto; bottom: calc(var(--kb, 0px) + 8px); right: 50%; transform: translateX(50%); font-size: 11px; } }
+
 </style>
 </head>
 <body>
@@ -326,6 +353,7 @@ html.kb-frozen .key { background: #3d6a80; color: #bfe9ff; }
     <div id="progress">
       <div id="progress-line"></div>
       <div id="flag">🏁</div>
+      <div class="marker hidden" id="m-ghost"></div>
       <div class="marker" id="m-opp"></div>
       <div class="marker" id="m-me"></div>
     </div>
@@ -333,6 +361,7 @@ html.kb-frozen .key { background: #3d6a80; color: #bfe9ff; }
     <div class="stat"><span class="label">用时</span><span class="value" id="s-time">0.0</span><span class="unit">秒</span></div>
   </div>
   <div id="banner"></div>
+  <div id="ghostchip" class="hidden"></div>
   <div id="toast"></div>
   <div id="danger"></div>
   <div id="typing"><div id="tape"></div></div>
@@ -373,6 +402,15 @@ html.kb-frozen .key { background: #3d6a80; color: #bfe9ff; }
     <h1>键上追击</h1>
     <p class="sub">3D 打字追逐 · 打得越快，跑得越快</p>
 
+    <!-- 从挑战链接进来时显示 -->
+    <div id="chal-banner" class="hidden">
+      <p id="chal-info"></p>
+      <div class="row">
+        <button id="chal-go">接受挑战 <kbd>Enter</kbd></button>
+        <button id="chal-skip" class="ghost">先不了</button>
+      </div>
+    </div>
+
     <div class="tabs" id="modes">
       <button data-mode="campaign">🏁 闯关</button>
       <button data-mode="zen">🌿 Zen 无限跑</button>
@@ -397,6 +435,7 @@ html.kb-frozen .key { background: #3d6a80; color: #bfe9ff; }
       <h2>选择关卡</h2>
       <div class="grid" id="levels"></div>
       <button id="symbols" class="toggle"></button>
+      <button id="ghost" class="toggle"></button>
       <p class="need" id="need"></p>
     </div>
 
@@ -440,6 +479,7 @@ html.kb-frozen .key { background: #3d6a80; color: #bfe9ff; }
     <div id="r-stars"></div>
     <p class="sub" id="r-sub"></p>
     <div class="result-stats" id="r-stats"></div>
+    <p id="r-ghost"></p>
     <div id="r-heat"></div>
     <div class="row">
       <button id="next">下一关 <kbd>Enter</kbd></button>
@@ -447,6 +487,7 @@ html.kb-frozen .key { background: #3d6a80; color: #bfe9ff; }
       <button id="back" class="ghost">返回菜单 <kbd>Esc</kbd></button>
     </div>
     <button id="share" class="toggle">📸 生成成绩图，发给朋友</button>
+    <button id="challenge" class="toggle">⚔️ 生成挑战链接，让朋友来比</button>
   </div>
 </div>
 
@@ -459,6 +500,21 @@ html.kb-frozen .key { background: #3d6a80; color: #bfe9ff; }
       <button id="share-save">保存图片</button>
       <button id="share-copy" class="ghost">复制图片</button>
       <button id="share-close" class="ghost">关闭 <kbd>Esc</kbd></button>
+    </div>
+  </div>
+</div>
+
+<!-- 挑战链接 -->
+<div id="chalbox" class="overlay hidden">
+  <div class="panel">
+    <h1>⚔️ 发起挑战</h1>
+    <p class="need" id="chal-desc"></p>
+    <input id="chal-name" maxlength="12" autocomplete="off" spellcheck="false" placeholder="你的名字（可选，对方会看到）">
+    <textarea id="chal-link" readonly rows="4" spellcheck="false"></textarea>
+    <p class="need" id="chal-msg"></p>
+    <div class="row">
+      <button id="chal-copy">复制链接</button>
+      <button id="chal-close" class="ghost">关闭 <kbd>Esc</kbd></button>
     </div>
   </div>
 </div>
@@ -574,12 +630,17 @@ window.EXTRA_WORDS = (
 ).split(' ');
 
 // 生成至少 minLen 个字符的练习文本，并按单词边界切成行。
-window.buildText = function (poolName, minLen, lineWidth) {
+// rnd 可选：传入一个固定种子的随机函数，就能每次得到同一段文本（挑战链接用它让双方打同样的字）。
+window.buildText = function (poolName, minLen, lineWidth, rnd) {
   const pool = window.TEXT_POOLS[poolName];
+  rnd = rnd || Math.random;
   let text = '';
   let bag = [];
   while (text.length < minLen) {
-    if (!bag.length) bag = pool.slice().sort(() => Math.random() - 0.5);
+    if (!bag.length) {          // 洗牌（逐个交换的写法在所有浏览器里结果一致）
+      bag = pool.slice();
+      for (let i = bag.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [bag[i], bag[j]] = [bag[j], bag[i]]; }
+    }
     text += (text ? ' ' : '') + bag.pop();
   }
   const lines = [];
@@ -1172,6 +1233,15 @@ window.buildText = function (poolName, minLen, lineWidth) {
   const cop = makeRunner('cop'), thief = makeRunner('thief');
   scene.add(cop, thief);
 
+  // 幽灵：同样的小人，整个换成一种半透明的浅青色，不投影子。用来回放以前某一局的跑动
+  const ghostMat = new T.MeshBasicMaterial({ color: 0xbff4ff, transparent: true, opacity: 0.5, depthWrite: false });
+  const ghosts = {};
+  ['cop', 'thief'].forEach(kind => {
+    const r = makeRunner(kind);
+    r.traverse(o => { if (o.isMesh) { o.material = ghostMat; o.castShadow = false; } });
+    r.visible = false; scene.add(r); ghosts[kind] = r;
+  });
+
   // 巡警头顶的红蓝警灯
   const siren = new T.PointLight(0xff3344, 0, 30, 1.6);
   siren.position.set(0, 4.2, 0); cop.add(siren);
@@ -1212,9 +1282,9 @@ window.buildText = function (poolName, minLen, lineWidth) {
   [...Object.keys(ITEMS).map(makeItem), new T.Mesh(itemGeo, itemLostMat), new T.Points(dummyGeo, snowMat)].forEach(o => {
     o.visible = false; o.position.y = -50; scene.add(o); warmOnly.push(o);
   });
-  warmOnly.push(ice, ice2, burstPts);
+  warmOnly.push(ice, ice2, burstPts, ghosts.cop, ghosts.thief);
 
-  Object.assign(W, { cop, thief, siren, sirenBulb, arrow, ice, ice2, burst, THEMES, TRACKS, ITEMS, itemLostMat, makeItem, frameAt, place, build, prebuild, update });
+  Object.assign(W, { cop, thief, ghosts, siren, sirenBulb, arrow, ice, ice2, burst, THEMES, TRACKS, ITEMS, itemLostMat, makeItem, frameAt, place, build, prebuild, update });
   window.World = W;
 })();
 
@@ -1335,6 +1405,9 @@ window.buildText = function (poolName, minLen, lineWidth) {
   const TOUCH = !!window.IS_TOUCH;   // 触屏设备：用游戏内键盘，文本简化成键盘上有的字符
   // 游戏内键盘的布局（没有 Shift 和数字层，所以触屏上的文本只保留这些字符）
   const KEY_ROWS = ['qwertyuiop', "asdfghjkl'", 'zxcvbnm,.'];
+  const HOME_URL = 'https://www.kostyas.blog/typing/';   // 游戏的公开网址：直接打开本地文件玩的时候，挑战链接指向这里
+  const GHOST_STEP = 0.5;     // 幽灵：每隔多少秒记一次位置
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');   // 把文字安全地放进 HTML
   const touchText = s => s.toLowerCase().replace(/[^a-z ,.']/g, '').replace(/ +/g, ' ').replace(/ ([,.])/g, '$1').trim();
 
   // ---------- 存档 ----------
@@ -1342,6 +1415,9 @@ window.buildText = function (poolName, minLen, lineWidth) {
   try { Object.assign(save, JSON.parse(localStorage.getItem('kc-save') || '{}')); } catch (e) {}
   save.zen = Object.assign({ char: 'cop', theme: 'day', track: 'clover', source: 'prose', custom: '' }, save.zen);
   save.keys = save.keys || {};   // 每个键的累计统计，给弱键分析用
+  save.ghosts = save.ghosts || {};                 // 每关每种身份最快的一局，用来当幽灵
+  if (save.ghost === undefined) save.ghost = true; // 菜单里的"幽灵"开关
+  save.name = save.name || '';                     // 发挑战链接时用的名字
   const persist = () => { try { localStorage.setItem('kc-save', JSON.stringify(save)); } catch (e) {} };
 
   let role = 'chase';
@@ -1349,6 +1425,80 @@ window.buildText = function (poolName, minLen, lineWidth) {
   let state = 'menu';         // menu | countdown | playing | over
   let g = null;               // 当前这一局的数据
   let menuPos = 0;
+  let challenge = null;       // 从网址里读到的挑战（别人发来的一局）
+  let ghostSrc = null;        // 接受挑战后，下一局要用的幽灵
+
+  // ---------- 幽灵与挑战链接 ----------
+  // 一局的"进度曲线"：每 0.5 秒记一次"已经前进了多少键"（打对的字数 + 道具带来的进退）。
+  // 回放时按时间在两个记录点之间取中间值，就得到幽灵此刻的位置。
+  // 写进网址时只存相邻两点的差，每个差用一个字符表示（范围 -32 ~ 31）。
+  const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+  function packGhost(pos) {
+    let out = '', cur = pos[0];
+    for (let i = 1; i < pos.length; i++) {
+      const d = Math.max(-32, Math.min(31, pos[i] - cur));   // 超出范围的部分会在后面几个点里补回来
+      out += B64[d + 32]; cur += d;
+    }
+    return out;
+  }
+  function unpackGhost(str) {
+    const pos = [0];
+    for (const ch of str) {
+      const i = B64.indexOf(ch);
+      if (i < 0) return null;
+      pos.push(pos[pos.length - 1] + i - 32);
+    }
+    return pos;
+  }
+  function ghostAt(gh, t) {
+    const n = gh.pos.length - 1;
+    if (t >= gh.T) return gh.pos[n];
+    const x = t / GHOST_STEP, i = Math.min(n, Math.floor(x)), a = gh.pos[i], b = gh.pos[Math.min(n, i + 1)];
+    return a + (b - a) * (x - i);
+  }
+  // 固定种子的随机数：同一个种子永远给出同一串数，挑战双方因此能打到同一段文字
+  const seeded = a => () => {
+    a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+  const ghostKey = (lv, sym) => lv.id + '.' + role + (sym ? '.s' : '');
+  const secs = t => t.toFixed(1);
+  const deed = r => r === 'chase' ? '抓到飞贼' : '成功逃脱';
+
+  // 挑战链接的格式：#c=版本.关卡.身份.符号.文本种子.用时(0.1秒,36进制).WPM.正确率.进度曲线.名字
+  function challengeLink(run, name) {
+    const base = /^https?:$/.test(location.protocol) ? location.origin + location.pathname : HOME_URL;
+    return base + '#c=' + [1, run.level + 1, run.role === 'chase' ? 'c' : 'e', run.sym ? 1 : 0, run.seed.toString(36),
+      Math.round(run.T * 10).toString(36), run.wpm, run.acc, packGhost(run.pos), encodeURIComponent(name)].join('.');
+  }
+  function readChallenge() {
+    const m = /[#&]c=([^&]+)/.exec(location.hash);
+    if (!m) return null;
+    const p = m[1].split('.');
+    if (p[0] !== '1' || p.length < 9) return null;
+    const level = parseInt(p[1], 10) - 1, seed = parseInt(p[4], 36), T = parseInt(p[5], 36) / 10;
+    const pos = unpackGhost(p[8]);
+    if (!LEVELS[level] || !/^[ce]$/.test(p[2]) || !isFinite(seed) || !(T > 1 && T < 300) || !pos) return null;
+    if (Math.abs(pos.length - 2 - Math.floor(T / GHOST_STEP)) > 2) return null;   // 曲线长度和用时对不上，当作坏链接
+    let name = '';
+    try { name = decodeURIComponent(p.slice(9).join('.')).trim().slice(0, 12); } catch (e) {}
+    return { level, role: p[2] === 'c' ? 'chase' : 'escape', sym: p[3] === '1', seed, T, pos,
+      wpm: parseInt(p[6], 10) || 0, acc: parseInt(p[7], 10) || 0, name: name || '朋友', challenge: true };
+  }
+  challenge = readChallenge();
+  window.addEventListener('hashchange', () => { if (state === 'menu') { challenge = readChallenge(); refreshMenu(); } });
+  function acceptChallenge() {
+    if (!challenge) return;
+    save.mode = 'campaign'; role = challenge.role; levelIdx = challenge.level; ghostSrc = challenge;
+    startGame();
+  }
+  function dropChallenge() {
+    challenge = null;
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    refreshMenu();
+  }
 
   // ---------- 菜单 ----------
   const starStr = n => '★★★'.split('').map((s, i) => i < n ? s : `<i>${s}</i>`).join('');
@@ -1397,7 +1547,13 @@ window.buildText = function (poolName, minLen, lineWidth) {
     $('pane-campaign').classList.toggle('hidden', zen || drill);
     $('pane-zen').classList.toggle('hidden', !zen);
     $('pane-drill').classList.toggle('hidden', !drill);
-    $('start').innerHTML = (drill ? '开始特训' : zen ? '开始跑步' : '开始游戏') + ' <kbd>Enter</kbd>';
+    $('start').innerHTML = (drill ? '开始特训' : zen ? '开始跑步' : '开始游戏') + (challenge ? '' : ' <kbd>Enter</kbd>');
+    $('chal-banner').classList.toggle('hidden', !challenge);
+    if (challenge) {
+      const c = challenge, clv = LEVELS[c.level];
+      $('chal-info').innerHTML = `<b>⚔️ ${esc(c.name)} 向你发起挑战</b>第 ${c.level + 1} 关 · ${clv.name} · 你来扮演${c.role === 'chase' ? '巡警' : '飞贼'}<br>` +
+        `对方用 <b>${secs(c.T)} 秒</b>${deed(c.role)}（${c.wpm} WPM · 正确率 ${c.acc}%）。你们打的是同一段文字，对方会以幽灵的样子和你一起跑。`;
+    }
     $('tip').innerHTML = zen || drill ? (TOUCH ? '跑步中点右上角的 ✕ 结束并查看统计' : '请先切换到英文输入法 · 跑步中按 Esc 结束并查看统计')
       : (TOUCH ? '' : '请先切换到英文输入法 · ') + '打错不会前进，改对了再继续<br>' +
         '把带图标的<b>道具词</b>一口气打对就能拿到道具：⚡ 冲刺　❄️ 冰冻对手　🍌 让对手滑倒<br>' +
@@ -1429,6 +1585,9 @@ window.buildText = function (poolName, minLen, lineWidth) {
     const lv = LEVELS[levelIdx], b = save.best[lv.id];
     $('symbols').className = 'toggle' + (save.symbols ? ' on' : '');
     $('symbols').textContent = save.symbols ? '符号特训：开（文本带数字和符号）' : '符号特训：关（打普通文章）';
+    const gh = save.ghosts[ghostKey(lv, save.symbols)];
+    $('ghost').className = 'toggle' + (save.ghost ? ' on' : '');
+    $('ghost').textContent = !save.ghost ? '👻 幽灵：关' : gh ? `👻 幽灵：开（和自己最快的一局比 · ${secs(gh.t / 10)} 秒）` : '👻 幽灵：开（这一关赢一局后就会出现）';
     $('need').textContent = `想赢，需要保持大约 ${lv.wpm} WPM（每分钟 ${lv.wpm * 5} 键）` + (b ? ` · 你的最佳 ${b} WPM` : '');
     W.build(lv.theme, lv.track);
   }
@@ -1437,6 +1596,9 @@ window.buildText = function (poolName, minLen, lineWidth) {
     if (confirm('确定清空所有按键统计吗？热力图和弱键分析会从头开始。')) { save.keys = {}; persist(); refreshMenu(); }
   };
   $('symbols').onclick = () => { save.symbols = !save.symbols; persist(); refreshMenu(); };
+  $('ghost').onclick = () => { save.ghost = !save.ghost; persist(); refreshMenu(); };
+  $('chal-go').onclick = acceptChallenge;
+  $('chal-skip').onclick = dropChallenge;
   $('start').onclick = startGame;
   $('again').onclick = startGame;
   $('next').onclick = nextLevel;
@@ -1444,7 +1606,7 @@ window.buildText = function (poolName, minLen, lineWidth) {
 
   function resetRunners() {
     [W.cop, W.thief].forEach(r => { r.visible = true; r.userData.setPose('run'); });
-    W.ice.visible = W.ice2.visible = false;
+    W.ice.visible = W.ice2.visible = W.ghosts.cop.visible = W.ghosts.thief.visible = false;
   }
   function clearItems() {
     if (g) g.items.forEach(it => { if (it.mesh) W.scene.remove(it.mesh); it.mesh = null; });
@@ -1454,7 +1616,8 @@ window.buildText = function (poolName, minLen, lineWidth) {
     if (g) saveKeys();
     setKb(false);
     clearItems(); resetRunners();
-    state = 'menu'; g = null;
+    state = 'menu'; g = null; ghostSrc = null;
+    if (levelIdx >= save.unlocked) levelIdx = save.unlocked - 1;   // 挑战可能发生在还没解锁的关卡，回菜单时退回来
     $('menu').classList.remove('hidden');
     ['result', 'hud', 'countdown'].forEach(id => $(id).classList.add('hidden'));
     W.siren.intensity = 0;
@@ -1524,7 +1687,12 @@ window.buildText = function (poolName, minLen, lineWidth) {
       F = need * ROUND_SECONDS / (1 - HEAD_START); h = F * HEAD_START;
       playerStart = h; oppStart = 0; oppSpeed = F / ROUND_SECONDS;
     }
-    let text = window.buildText(save.symbols && !TOUCH ? 'symbols' : lv.pool, Math.ceil(F) + 90, 46).text;
+    // 幽灵：接受了挑战就用对方那一局（连文本也用同一段）；否则用自己在这一关最快的一局
+    const sym = ghostSrc ? ghostSrc.sym : save.symbols;
+    const seed = ghostSrc ? ghostSrc.seed : Math.floor(Math.random() * 0x7fffffff);
+    const own = save.ghost && save.ghosts[ghostKey(lv, sym)];
+    const ghost = ghostSrc || (own && unpackGhost(own.d) ? { T: own.t / 10, pos: unpackGhost(own.d), name: '' } : null);
+    let text = window.buildText(sym && !TOUCH ? 'symbols' : lv.pool, Math.ceil(F) + 90, 46, seeded(seed)).text;
     if (TOUCH) text = touchText(text);
     const items = pickItems(text, lv.items, F - playerStart);
     const itemAt = {};
@@ -1540,7 +1708,12 @@ window.buildText = function (poolName, minLen, lineWidth) {
       errSince: 0, errLimit: Math.max(ERR_MIN, Math.min(ERR_MAX, Math.round((F - playerStart) * ERR_RATE))),
       gap0: Math.abs(oppStart - playerStart), disp: playerStart, oppPos: oppStart, oppDisp: oppStart, count: 3.2,
       me: role === 'chase' ? W.cop : W.thief, opp: role === 'chase' ? W.thief : W.cop,
+      sym, seed, rec: [0], recT: 0,                 // 这一局自己的进度曲线
+      ghost, ghostMesh: ghost ? W.ghosts[role === 'chase' ? 'cop' : 'thief'] : null, ghostDisp: playerStart, ghostDone: false,
     });
+    if (g.ghostMesh) g.ghostMesh.userData.setPose('run');
+    $('m-ghost').classList.toggle('hidden', !ghost);
+    $('ghostchip').className = ghost ? '' : 'hidden'; $('ghostchip').textContent = '';
     $('m-me').className = 'marker ' + (role === 'chase' ? 'cop' : 'thief');
     $('m-opp').className = 'marker ' + (role === 'chase' ? 'thief' : 'cop');
     $('gap-l').className = role === 'chase' ? 'me' : ''; $('gap-r').className = role === 'escape' ? 'me' : '';
@@ -1657,16 +1830,18 @@ window.buildText = function (poolName, minLen, lineWidth) {
     return ok;
   }
   window.addEventListener('keydown', e => {
+    // 分享图或挑战链接的窗口开着时，按键只管关它（窗口里的输入框照常能打字）
+    if (!$('sharebox').classList.contains('hidden')) { if (e.key === 'Escape') closeShare(); return; }
+    if (!$('chalbox').classList.contains('hidden')) { if (e.key === 'Escape') closeChal(); return; }
     if (e.target && (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT')) return; // 正在填自定义文本
     if (e.metaKey || e.ctrlKey || e.altKey) return;
-    if (!$('sharebox').classList.contains('hidden')) { if (e.key === 'Escape') closeShare(); return; }   // 分享图开着时，按键只管关它
     if (e.key === 'Escape') { escapeAction(); return; }
     if (e.key === 'Enter') {
-      if (state === 'menu') { e.preventDefault(); startGame(); }
+      if (state === 'menu') { e.preventDefault(); if (challenge) acceptChallenge(); else startGame(); }
       else if (state === 'over') {
         e.preventDefault();
         if ($('result').classList.contains('hidden')) g.overT = 99;       // 跳过结局动画
-        else if (g.zen || !g.win) startGame(); else nextLevel();
+        else if ($('next').classList.contains('hidden')) startGame(); else nextLevel();
       }
       return;
     }
@@ -1719,7 +1894,6 @@ window.buildText = function (poolName, minLen, lineWidth) {
   window.addEventListener('resize', () => { if (TOUCH && document.documentElement.classList.contains('kb-on')) setKb(true); });
 
   // 纸带：整段文本只建一次 span，之后每敲一键只改相关几个字符的样式，再整体左移一格
-  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
   const spansOf = str => [...str].map(c => `<span>${esc(c)}</span>`).join('');
   function paint(i) {
     const el = g.spans[i];
@@ -1812,6 +1986,13 @@ window.buildText = function (poolName, minLen, lineWidth) {
     $('s-time').textContent = g.t.toFixed(1);
     $('m-me').style.left = pct(g.disp);
     $('m-opp').style.left = pct(g.oppPos);
+    if (g.ghost) {
+      const gp = g.playerStart + ghostAt(g.ghost, g.t), d = Math.round(gp - mePos()), who = g.ghost.name || '幽灵';
+      $('m-ghost').style.left = pct(gp);
+      $('ghostchip').textContent = g.ghostDone ? `👻 ${who}已经${deed(role)}（${secs(g.ghost.T)} 秒）`
+        : d > 0 ? `👻 ${who}领先你 ${d} 键` : d < 0 ? `👻 你领先${who} ${-d} 键` : `👻 和${who}并排`;
+      $('ghostchip').className = g.ghostDone || d > 0 ? 'behind' : '';
+    }
     g.items.forEach(it => {
       it.pin.style.left = pct(g.playerStart + g.bonus + it.end);
       it.pin.className = 'pin' + (it.state === 'pending' ? '' : ' ' + it.state);
@@ -1857,22 +2038,36 @@ window.buildText = function (poolName, minLen, lineWidth) {
     // 星级：赢 = 1 星；正确率 ≥ 95% = 2 星；再加上没有打丢任何道具 = 3 星
     const stars = win ? 1 + (a >= 95 ? 1 : 0) + (a >= 95 && lost === 0 ? 1 : 0) : 0;
     const isLast = levelIdx === LEVELS.length - 1;
-    if (win) {
+    const official = levelIdx < save.unlocked;   // 挑战可能发生在还没解锁的关卡：那样的一局不动存档
+    const gh = g.ghost, isChal = !!(gh && gh.challenge), who = gh && gh.name ? gh.name : '自己的最佳';
+    g.rec.push(Math.round(g.typed + g.bonus));
+    // 赢了的一局可以做成挑战链接发给别人
+    g.run = win ? { level: levelIdx, role, sym: g.sym, seed: g.seed, T: g.t, pos: g.rec, wpm: w, acc: a } : null;
+    if (win && official) {
       save.stars[lv.id] = Math.max(save.stars[lv.id] || 0, stars);
       save.best[lv.id] = Math.max(save.best[lv.id] || 0, w);
       save.unlocked = Math.min(LEVELS.length, Math.max(save.unlocked, levelIdx + 2));
+      const key = ghostKey(lv, g.sym), old = save.ghosts[key];
+      if (!old || g.t * 10 < old.t) save.ghosts[key] = { t: Math.round(g.t * 10), d: packGhost(g.rec) };   // 留下最快的一局当幽灵
     }
+    const dt = gh ? Math.abs(g.t - gh.T) : 0, beat = !!(gh && win && g.t < gh.T);
+    $('r-ghost').innerHTML = !gh ? ''
+      : beat ? `👻 比 <b>${esc(who)}</b> 快 ${secs(dt)} 秒${isChal ? '，挑战成功！' : '，新纪录！'}`
+      : win ? `👻 比 <b>${esc(who)}</b> 慢 ${secs(dt)} 秒${isChal ? '，再来一局？' : ''}`
+      : `👻 <b>${esc(who)}</b> 用 ${secs(gh.T)} 秒${deed(role)}`;
+    $('challenge').classList.toggle('hidden', !win);
     saveKeys(); showSessionHeat();
     $('r-title').textContent = win ? (role === 'chase' ? '抓到了！' : '成功逃脱！') : (role === 'chase' ? '让他跑了…' : '被抓住了…');
     $('r-stars').innerHTML = starStr(stars);
-    $('r-sub').textContent = !win ? `这一关需要约 ${lv.wpm} WPM，再试一次吧`
+    $('r-sub').textContent = isChal ? `来自 ${gh.name} 的挑战 · 第 ${levelIdx + 1} 关 · ${lv.name}`
+      : !win ? `这一关需要约 ${lv.wpm} WPM，再试一次吧`
       : isLast ? '全部通关！可以回去把每一关刷到三星'
       : stars === 3 ? '完美！下一关已解锁' : stars === 2 ? '下一关已解锁 · 不打丢道具就是三星' : '下一关已解锁 · 正确率到 95% 可得两星';
     const stats = [[w, 'WPM'], [a, '正确率 %'], [g.t.toFixed(1), '用时 秒'], [`${got}/${g.items.length}`, '拿到道具']];
     setStats(stats);
     g.card = { title: $('r-title').textContent, stars, stats,
-      sub: `第 ${levelIdx + 1} 关 · ${lv.name} · ${role === 'chase' ? '我是巡警' : '我是飞贼'}` };
-    const canNext = win && !isLast;
+      sub: `第 ${levelIdx + 1} 关 · ${lv.name} · ${role === 'chase' ? '我是巡警' : '我是飞贼'}` + (beat && isChal ? ` · 赢了 ${gh.name} 的幽灵` : '') };
+    const canNext = win && !isLast && !isChal;
     $('next').classList.toggle('hidden', !canNext);
     $('again').className = canNext ? 'ghost' : '';
     $('again').innerHTML = canNext ? '再来一局' : '再来一局 <kbd>Enter</kbd>';
@@ -1894,6 +2089,7 @@ window.buildText = function (poolName, minLen, lineWidth) {
     setStats(stats);
     g.card = { title: g.drill ? '弱键特训' : 'Zen 无限跑', stars: null, stats, sub: `最高 ${g.peak} WPM · 最长连击 ${g.bestStreak}` };
     $('next').classList.add('hidden');
+    $('r-ghost').innerHTML = ''; $('challenge').classList.add('hidden');
     $('again').className = '';
     $('again').innerHTML = '再跑一次 <kbd>Enter</kbd>';
     $('result').classList.remove('hidden');
@@ -1929,6 +2125,35 @@ window.buildText = function (poolName, minLen, lineWidth) {
       .then(() => { $('share-msg').textContent = '已复制，可以直接粘贴到聊天窗口'; })
       .catch(() => { $('share-msg').textContent = '浏览器不允许复制图片，请用"保存图片"'; });
   });
+
+  // ---------- 挑战链接 ----------
+  function paintChal() {
+    $('chal-link').value = challengeLink(g.run, $('chal-name').value.trim());
+    $('chal-msg').textContent = '';
+  }
+  function openChal() {
+    if (!g || !g.run) return;
+    const r = g.run;
+    $('chal-desc').textContent = `第 ${r.level + 1} 关 · ${LEVELS[r.level].name} · ${secs(r.T)} 秒${deed(r.role)} · ${r.wpm} WPM。` +
+      '对方打开链接后，会和你这一局的幽灵比谁更快，打的也是同一段文字。';
+    $('chal-name').value = save.name;
+    paintChal();
+    $('chalbox').classList.remove('hidden');
+  }
+  function closeChal() { $('chalbox').classList.add('hidden'); if (document.activeElement) document.activeElement.blur(); }
+  $('challenge').onclick = openChal;
+  $('chal-close').onclick = closeChal;
+  $('chal-name').oninput = () => { save.name = $('chal-name').value.trim(); persist(); paintChal(); };
+  $('chal-copy').onclick = () => {
+    const link = $('chal-link').value, ok = () => { $('chal-msg').textContent = '已复制，粘贴发给朋友就行'; };
+    const manual = () => {       // 浏览器不给用剪贴板时：选中文本，用老办法复制
+      $('chal-link').select();
+      let done = false;
+      try { done = document.execCommand('copy'); } catch (e) {}
+      if (done) ok(); else $('chal-msg').textContent = '没能自动复制，链接已选中，请按 Ctrl/⌘ + C';
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(ok, manual); else manual();
+  };
 
   // ---------- 主循环 ----------
   const P = new T.Vector3(), TG = new T.Vector3(), camTo = new T.Vector3(), lookTo = new T.Vector3(), look = new T.Vector3();
@@ -1980,6 +2205,12 @@ window.buildText = function (poolName, minLen, lineWidth) {
       if (state === 'playing' && !zen) {
         if (g.count > 0) { g.count -= dt; if (g.count <= 0) $('countdown').classList.add('hidden'); }
         g.t += dt;
+        g.recT += dt;
+        if (g.recT >= GHOST_STEP) { g.recT -= GHOST_STEP; g.rec.push(Math.round(g.typed + g.bonus)); }
+        if (g.ghost && !g.ghostDone && g.t >= g.ghost.T) {
+          g.ghostDone = true;
+          toast(`👻 ${g.ghost.name || '幽灵'}已经${deed(role)}了`, true);
+        }
         if (g.meFreezeT > 0) g.meFreezeT -= dt;
         // 对手：起步稍慢，速度有一点起伏；被冰冻时它的时钟不走
         if (g.freezeT > 0) g.freezeT -= dt; else g.oppClock += dt;
@@ -2040,6 +2271,19 @@ window.buildText = function (poolName, minLen, lineWidth) {
         const frozen = g.freezeT > 0 && !over;
         W.ice.visible = frozen;
         if (frozen) { W.ice.position.copy(g.opp.position).setY(1.9); W.ice.rotation.y = g.opp.rotation.y; }
+      }
+
+      // 幽灵：按当时的进度曲线跑，稍微靠边一点，免得和你重叠在一起
+      if (g.ghostMesh) {
+        const m = g.ghostMesh, prevG = g.ghostDisp;
+        m.visible = !over && !g.ghostDone;
+        if (m.visible) {
+          g.ghostDisp += (g.playerStart + ghostAt(g.ghost, g.t) - g.ghostDisp) * Math.min(1, dt * 7);
+          W.place(m, g.ghostDisp / g.F);
+          W.frameAt(g.ghostDisp / g.F, _v, _v2);
+          m.position.x += _v2.z * 1.4; m.position.z -= _v2.x * 1.4;
+          m.userData.animate(dt, Math.abs(g.ghostDisp - prevG) * g.unit / dt);
+        }
       }
 
       // 道具箱：飘在"打完这个词时你会到达"的位置
