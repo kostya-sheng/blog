@@ -2674,10 +2674,13 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
   }
   window.addEventListener('resize', () => { if (TOUCH && document.documentElement.classList.contains('kb-on')) setKb(true); });
 
-  // 纸带：整段文本只建一次 span，之后每敲一键只改相关几个字符的样式，再整体左移一格
+  // 纸带：整段文本只建一次 span，之后每敲一键只改相关几个字符的样式，再整体左移一格。
+  // Zen 会不停往后接文本：已经打过、移出画面很久的字要从左边删掉（g.cut 记删了多少个），
+  // 否则纸带越来越长，每敲一键浏览器都要重排整行，打几千字后明显变卡
+  const TAPE_KEEP = 120, TAPE_TRIM = 300;   // 光标左边至少留 120 个字；超过 300 个时一次删到只剩 120 个
   const spansOf = str => [...str].map(c => `<span>${esc(c)}</span>`).join('');
   function paint(i) {
-    const el = g.spans[i];
+    const el = g.spans[i - g.cut];
     if (!el) return;
     let cls = i < g.typed ? 'done' : i === g.typed ? 'cur' + (g.lastWrong ? ' bad' : '') : '';
     const it = g.itemAt[i];
@@ -2691,7 +2694,7 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
   function buildTape() {
     const tape = $('tape');
     tape.innerHTML = spansOf(g.text);
-    g.spans = tape.children;
+    g.spans = tape.children; g.cut = 0;
     for (let i = 0; i < g.text.length; i++) paint(i);
     tape.style.setProperty('--k', 0);
   }
@@ -2703,7 +2706,19 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     paint(g.typed - 1); paint(g.typed);
     const it = g.itemAt[g.typed - 1] || g.itemAt[g.typed];
     if (it) for (let i = it.start; i < it.end; i++) paint(i);
-    $('tape').style.setProperty('--k', g.typed);
+    const tape = $('tape');
+    if (g.typed - g.cut > TAPE_TRIM) {
+      // 删掉左边 n 个字后，剩下的字在布局里整体左移 n 格；同时把纸带的位移减 n 格抵消。
+      // 两件事要在同一帧、不带过渡动画地完成，画面才不会跳；之后再恢复动画，让这一键照常平滑左移一格
+      const n = g.typed - g.cut - TAPE_KEEP;
+      tape.style.transition = 'none';
+      for (let k = 0; k < n; k++) tape.firstChild.remove();
+      g.cut += n;
+      tape.style.setProperty('--k', g.typed - 1 - g.cut);
+      void tape.offsetWidth;
+      tape.style.transition = '';
+    }
+    tape.style.setProperty('--k', g.typed - g.cut);
   }
 
   // ---------- 声音 ----------
