@@ -67,6 +67,55 @@ html[lang="en"] .panel h2 { text-transform: uppercase; letter-spacing: 1.5px; }
 .tile:hover { background: rgba(255,255,255,.09); }
 .tile.active { border-color: #ffd166; background: rgba(255,209,102,.12); }
 .tile.locked { opacity: .4; cursor: not-allowed; }
+/* 限时活动关卡：一整行宽的卡片，红绿配色 */
+.tile.event { position: relative; width: 100%; margin-bottom: 8px; flex-direction: row; flex-wrap: wrap; justify-content: center;
+  gap: 4px 12px; padding: 12px 10px 10px; border-color: rgba(255,107,107,.55);
+  background: linear-gradient(120deg, rgba(201,42,50,.32), rgba(46,158,91,.28)); }
+.tile.event b { font-size: 16px; }
+.tile.event:hover { background: linear-gradient(120deg, rgba(201,42,50,.42), rgba(46,158,91,.38)); }
+.tile.event.active { border-color: #ffd166; box-shadow: 0 0 0 1px #ffd166 inset; }
+/* 活动卡片的提醒动画：边框缓慢呼吸发光，一道高光每隔几秒从左扫到右 */
+.tile.event { overflow: hidden; animation: ev-glow 2.6s ease-in-out infinite; }
+.tile.event::after { content: ''; position: absolute; top: 0; bottom: 0; left: -40%; width: 30%; pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.22), transparent); transform: skewX(-18deg);
+  animation: ev-sheen 4.5s ease-in-out infinite; }
+.tile.event > * { position: relative; z-index: 1; }
+@keyframes ev-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,107,0), 0 0 10px rgba(255,209,102,.15); }
+  50% { box-shadow: 0 0 0 3px rgba(255,107,107,.18), 0 0 22px rgba(255,209,102,.45); } }
+@keyframes ev-sheen { 0%, 55% { left: -40%; } 85%, 100% { left: 120%; } }
+.tile.event.active { animation-name: ev-glow-on; }
+@keyframes ev-glow-on { 0%, 100% { box-shadow: 0 0 0 1px #ffd166 inset, 0 0 10px rgba(255,209,102,.2); }
+  50% { box-shadow: 0 0 0 1px #ffd166 inset, 0 0 24px rgba(255,209,102,.5); } }
+/* 停在 Zen / 特训时，闯关按钮右上角的小红点，提醒那边有活动 */
+#modes button.ev-dot { position: relative; }
+#modes button.ev-dot::after { content: ''; position: absolute; top: 4px; right: 6px; width: 8px; height: 8px; border-radius: 50%;
+  background: #ff4d4d; box-shadow: 0 0 0 2px rgba(20,22,47,.9); animation: ev-ping 1.6s ease-out infinite; }
+@keyframes ev-ping { 0% { box-shadow: 0 0 0 2px rgba(20,22,47,.9), 0 0 0 0 rgba(255,77,77,.6); }
+  100% { box-shadow: 0 0 0 2px rgba(20,22,47,.9), 0 0 0 9px rgba(255,77,77,0); } }
+@media (prefers-reduced-motion: reduce) {
+  .tile.event, .tile.event.active, .tile.event::after, #modes button.ev-dot::after { animation: none; }
+  .tile.event::after { display: none; }
+}
+.tile.event .stars em { font-style: normal; font-size: 11px; letter-spacing: 0; margin-right: 6px; color: #ffd6d6; }
+/* 活动关卡的难度选择 */
+#ev-diff { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 10px; margin: -2px 0 12px;
+  padding: 10px 12px; border-radius: 12px; background: rgba(0,0,0,.22); }
+#ev-diff.hidden { display: none; }
+#ev-diff .ev-dlabel { font-size: 12px; font-weight: 700; letter-spacing: .1em; color: #b9bbd6; }
+#ev-diff .chip small { opacity: .65; font-size: 11px; margin-left: 2px; }
+#diff-custom { flex-basis: 100%; display: flex; align-items: center; gap: 12px; justify-content: center; }
+#diff-custom.hidden { display: none; }
+#z-story { margin: 4px 0 2px; padding: 10px 12px; border-radius: 12px; background: rgba(0,0,0,.22); }
+#z-story.hidden { display: none; }
+#z-story-note { margin: 0; font-size: 12px; line-height: 1.6; color: #b9bbd6; }
+#z-story-note i { color: #f4f1ea; }
+#z-story-note b { color: #ffd166; }
+#z-story .toggle { margin-top: 8px; padding: 4px 12px; font-size: 12px; }
+#story-note { flex-basis: 100%; margin: 2px 0 0; font-size: 12px; line-height: 1.5; color: #b9bbd6; }
+#story-note i { color: #f4f1ea; }
+#diff-range { width: min(320px, 70%); accent-color: #ffd166; }
+#diff-val { min-width: 74px; color: #ffd166; font: 700 14px ui-monospace, Menlo, monospace; }
+.tile.event .ev-tag { flex-basis: 100%; font-size: 11px; font-weight: 700; letter-spacing: .08em; color: #ffd6d6; }
 .toggle { margin-top: 12px; padding: 7px 16px; border-radius: 999px; border: 2px solid rgba(255,255,255,.12);
   background: rgba(255,255,255,.04); color: #b9bbd6; font: inherit; font-size: 13px; cursor: pointer; transition: .15s; }
 .toggle:hover { background: rgba(255,255,255,.09); }
@@ -212,6 +261,16 @@ html[lang="en"] .panel h2 { text-transform: uppercase; letter-spacing: 1.5px; }
   padding: 16px; border-radius: 16px; background: rgba(20,22,48,.74); border: 1px solid rgba(255,255,255,.1);
   backdrop-filter: blur(8px); }
 #hud.zen #zen { display: block; }
+/* Zen 打整篇故事时的阅读进度条 */
+#z-prog { display: none; position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: min(560px, calc(100% - 32px));
+  align-items: center; gap: 10px; padding: 7px 14px; border-radius: 999px; background: rgba(20,22,48,.74);
+  border: 1px solid rgba(255,255,255,.1); backdrop-filter: blur(8px); font-size: 12px; color: #b9bbd6; }
+#hud.zen.story #z-prog { display: flex; }
+#hud.ending #z-prog { opacity: 0; transition: opacity .3s; }
+#z-prog-label { white-space: nowrap; }
+#z-prog-bar { flex: 1; height: 8px; border-radius: 999px; background: rgba(255,255,255,.1); overflow: hidden; }
+#z-prog-fill { height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, #c92a32, #ffd166 55%, #3ddc84); transition: width .25s; }
+#z-prog-pct { min-width: 42px; text-align: right; color: #ffd166; font: 700 13px ui-monospace, Menlo, monospace; }
 #hud.zen #topbar, #hud.zen #gapbar, #hud.zen #errmeter, #hud.zen #danger, #hud.zen #banner { display: none; }
 #zen label { display: block; font-size: 11px; color: #8f93b8; }
 .z-big span { font: 800 56px/1 ui-monospace, Menlo, monospace; color: #ffd166; }
@@ -273,6 +332,9 @@ html.kb-frozen .key { background: #3d6a80; color: #bfe9ff; }
   .z-grid div:nth-child(n+5) { display: none; }
   #z-paused { grid-column: 1 / -1; margin: 0; font-size: 11px; display: none; }
   #zen.paused #z-paused { display: block; }
+  #z-prog { top: 8px; width: calc(100% - 16px); padding: 5px 10px; gap: 8px; font-size: 11px; }
+  #hud.zen.story #zen { top: 42px; }
+  html.touch #hud.zen.story #exit { top: 108px; }   /* 统计面板下移了，退出按钮跟着下移 */
 }
 @media (max-width: 560px) {
   .panel { padding: 18px 14px; }
@@ -382,6 +444,8 @@ html.touch #chal-name, html.touch #chal-link { -webkit-user-select: text; user-s
   <!-- 失误计数：攒满后对手会用一个道具 -->
   <div id="errmeter"><span data-i18n="errLabel">失误</span><span id="err-dots"></span><span data-i18n="errThen">→ 对手用道具</span></div>
 
+  <!-- Zen 打整篇故事时顶部的阅读进度条 -->
+  <div id="z-prog"><span id="z-prog-label"></span><div id="z-prog-bar"><div id="z-prog-fill"></div></div><b id="z-prog-pct"></b></div>
   <!-- Zen 模式的实时统计 -->
   <div id="zen">
     <div class="z-big"><span id="z-wpm">0</span><label data-i18n="zLive">实时 WPM · 最近 10 秒</label></div>
@@ -448,6 +512,18 @@ html.touch #chal-name, html.touch #chal-link { -webkit-user-select: text; user-s
         </button>
       </div>
       <h2 data-i18n="chooseLevel">选择关卡</h2>
+      <!-- 限时活动关卡：只在活动日期内显示 -->
+      <button id="event" class="tile event hidden"></button>
+      <!-- 活动关卡的难度：选中活动卡片时出现 -->
+      <div id="ev-diff" class="hidden">
+        <span class="ev-dlabel" data-i18n="hDiff">难度</span>
+        <div class="chips" id="diff-chips"></div>
+        <div id="diff-custom" class="hidden">
+          <input type="range" id="diff-range" min="10" max="120" step="1" data-i18n-aria="diff.custom" aria-label="自定义">
+          <b id="diff-val"></b>
+        </div>
+        <p id="story-note" class="hidden"></p>
+      </div>
       <div class="grid" id="levels"></div>
       <button id="symbols" class="toggle"></button>
       <button id="ghost" class="toggle"></button>
@@ -468,6 +544,8 @@ html.touch #chal-name, html.touch #chal-link { -webkit-user-select: text; user-s
       <textarea id="z-custom" class="hidden" rows="4" spellcheck="false" data-i18n-ph="customPh"
         placeholder="把想练的英文文本粘贴到这里，打完会从头循环。只保留英文字母、数字和常用符号。"></textarea>
       <p class="need" id="z-note"></p>
+      <div id="z-story" class="hidden"><p id="z-story-note"></p>
+        <button id="z-restart" class="toggle hidden" data-i18n="zenRestart">从头开始</button></div>
     </div>
 
     <!-- 弱键特训 -->
@@ -576,9 +654,10 @@ function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"f
       '小心：<b>失误攒多了</b>，对手也会对你用道具',
     tipZen: touch => touch ? '跑步中点右上角的 ✕ 结束并查看统计' : '请先切换到英文输入法 · 跑步中按 Esc 结束并查看统计',
     // 挑战横幅（D）
-    chalInfo: (name, n, lv, role, T, wpm, acc) => `<b>⚔️ ${name} 向你发起挑战</b>第 ${n} 关 · ${lv} · 你来扮演${ROLE_ZH[role]}<br>` +
+    chalInfo: (name, lvl, role, T, wpm, acc) => `<b>⚔️ ${name} 向你发起挑战</b>${lvl} · 你来扮演${ROLE_ZH[role]}<br>` +
       `对方用 <b>${T} 秒</b>${DEED_ZH[role]}（${wpm} WPM · 正确率 ${acc}%）。你们打的是同一段文字，对方会以幽灵的样子和你一起跑。`,
     chalGo: '接受挑战', chalSkip: '先不了', friend: '朋友',
+    chalExpired: (name, lv) => `<b>🎄 ${name} 的挑战来自限时活动「${lv}」</b>活动现在没有开放，这个挑战暂时玩不了。先去闯关吧！`,
     // Zen 设置（E）
     zenIntro: '没有对手、没有终点，想跑多久跑多久。停下打字超过 3 秒会自动暂停计时。',
     hChar: '角色', hScene: '场景', hTrack: '赛道', hText: '文本',
@@ -619,9 +698,10 @@ function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"f
     ghostTime: (who, role, T) => `👻 <b>${who}</b> 用 ${T} 秒${DEED_ZH[role]}`,
     // 结算（J）
     winChase: '抓到了！', winEscape: '成功逃脱！', loseChase: '让他跑了…', loseEscape: '被抓住了…',
-    subChal: (name, n, lv) => `来自 ${name} 的挑战 · 第 ${n} 关 · ${lv}`,
+    subChal: (name, lvl) => `来自 ${name} 的挑战 · ${lvl}`,
     subLose: w => `这一关需要约 ${w} WPM，再试一次吧`, subAll: '全部通关！可以回去把每一关刷到三星',
     sub3: '完美！下一关已解锁', sub2: '下一关已解锁 · 不打丢道具就是三星', sub1: '下一关已解锁 · 正确率到 95% 可得两星',
+    subEvent: s => s >= 3 ? '完美！圣诞夜大获全胜' : s === 2 ? '漂亮！不打丢道具就是三星' : '赢了！正确率到 95% 可得两星',
     stAcc: '正确率 %', stTime: '用时 秒', stItems: '拿到道具',
     titleDrill: '特训结束', titleZen: 'Zen 结束',
     subZen: (w, s, l) => `最高 ${w} WPM · 最长连击 ${s} · 跑了 ${l} 圈`, cardSubZen: (w, s) => `最高 ${w} WPM · 最长连击 ${s}`,
@@ -633,16 +713,35 @@ function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"f
     shareAlt: '成绩分享图', save: '保存图片', copy: '复制图片', close: '关闭',
     saved: '已保存到下载文件夹', copied: '已复制，可以直接粘贴到聊天窗口', copyFail: '浏览器不允许复制图片，请用"保存图片"',
     fileName: '键上追击-成绩.png', chalTitle: '⚔️ 发起挑战',
-    chalDesc: (n, lv, role, T, w) => `第 ${n} 关 · ${lv} · ${T} 秒${DEED_ZH[role]} · ${w} WPM。` +
+    chalDesc: (lvl, role, T, w) => `${lvl} · ${T} 秒${DEED_ZH[role]} · ${w} WPM。` +
       '对方打开链接后，会和你这一局的幽灵比谁更快，打的也是同一段文字。',
     namePh: '你的名字（可选，对方会看到）', copyLink: '复制链接', linkCopied: '已复制，粘贴发给朋友就行',
     linkManual: '没能自动复制，链接已选中，请按 Ctrl/⌘ + C',
     // 成绩图上的文字（M）
-    cardSub: (n, lv, role) => `第 ${n} 关 · ${lv} · 我是${ROLE_ZH[role]}`, cardBeat: name => ` · 赢了 ${name} 的幽灵`,
+    cardSub: (lvl, role) => `${lvl} · 我是${ROLE_ZH[role]}`, cardBeat: name => ` · 赢了 ${name} 的幽灵`,
     cardHeat: '本局键盘热力图 · 绿色稳，红色弱', cardUrl: url => `来比一比 → ${url}`,
     // 关卡名（N）
     'level.l1': '清晨热身', 'level.l2': '公园弯道', 'level.l3': '黄昏街区', 'level.l4': '晚高峰',
     'level.l5': '初雪', 'level.l6': '冰封环线', 'level.l7': '霓虹夜', 'level.l8': '午夜追击',
+    // 关卡标签与限时活动（P）
+    lvLabel: (n, lv) => `第 ${n} 关 · ${lv}`, eventLabel: (lv, d) => `🎄 ${lv}（${d}）`,
+    eventTag: (from, to) => `限时活动 · ${from} – ${to}`, eventDate: (m, d) => `${m}/${d}`,
+    hDiff: '难度', 'diff.easy': '轻松', 'diff.normal': '普通', 'diff.hard': '挑战', 'diff.custom': '自定义',
+    diffName: (d, w) => `${d} ${w} WPM`, evBest: d => `最高：${d}`,
+    storyNote: (author, title, year, pct) => `📖 文本：${author === 'O. Henry' ? '欧·亨利' : author}《${title === 'The Gift of the Magi' ? '麦琪的礼物' : title}》（<i>${title}</i>，${year}）英文原文 · ` +
+      `每局接着上次读到的地方往下打 · 已读 ${pct}%`,
+    'level.xmas': '圣诞夜追击',
+    // Zen 的圣诞场景与整篇故事（Q）
+    'theme.xmas': '🎄 圣诞夜', 'source.magi': '🎁 麦琪的礼物',
+    zenStoryNote: (author, title, year) => `📖 ${author === 'O. Henry' ? '欧·亨利' : author}《${title === 'The Gift of the Magi' ? '麦琪的礼物' : title}》（<i>${title}</i>，${year}）英文全文，约 11,000 个字符。` +
+      '一口气打完整篇，记下总用时；中途按 Esc 会保存进度和用时，下次接着打（停手时不计时）。',
+    zenStoryProg: (pct, time) => `进度：已读 <b>${pct}%</b>，累计用时 <b>${time}</b>`,
+    zenStoryBest: (time, w, a, day) => `最快读完：<b>${time}</b> · ${w} WPM · 准确率 ${a}%（${day}）`,
+    zenRestart: '清空进度，从头开始', dayFmt: (y, m, d) => `${y}/${m}/${d}`,
+    titleStoryDone: '读完整篇！', subStoryDone: (title, rec) => `《${title === 'The Gift of the Magi' ? '麦琪的礼物' : title}》全文打完了` + (rec ? ' · 🏆 新纪录' : ''),
+    subStoryProg: (pct, time) => `已读到 ${pct}%，累计用时 ${time}，下次接着打`,
+    stStoryTime: '全篇用时', stThisRun: '本次用时',
+    cardStoryDone: (author, title) => `打完了${author === 'O. Henry' ? '欧·亨利' : author}《${title === 'The Gift of the Magi' ? '麦琪的礼物' : title}》全文`,
   };
 
   const en = {
@@ -662,9 +761,10 @@ function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"f
       'Type a <b>power-up word</b> (marked with an icon) without a mistake to grab it: ⚡ Dash　❄️ Rival Freeze　🍌 Rival Slip<br>' +
       'Careful: if you make <b>too many mistakes</b>, your rival will use power-ups on you',
     tipZen: touch => touch ? 'Tap ✕ in the top-right corner to finish and see your stats' : 'Press Esc while running to finish and see your stats',
-    chalInfo: (name, n, lv, role, T, wpm, acc) => `<b>⚔️ ${name} has issued a challenge</b>Level ${n} · ${lv} · You play the ${role === 'chase' ? 'cop' : 'thief'}<br>` +
+    chalInfo: (name, lvl, role, T, wpm, acc) => `<b>⚔️ ${name} has issued a challenge</b>${lvl} · You play the ${role === 'chase' ? 'cop' : 'thief'}<br>` +
       `They ${DEED_EN[role]} in <b>${T}s</b> (${wpm} WPM · ${acc}% accuracy). You'll type the exact same text, and they'll run beside you as a ghost.`,
     chalGo: 'Accept challenge', chalSkip: 'Not now', friend: 'A friend',
+    chalExpired: (name, lv) => `<b>🎄 ${cap(name)}'s challenge is from the limited-time event “${lv}”</b>The event isn't running right now, so this challenge can't be played. Try the campaign instead!`,
     zenIntro: 'No rival, no finish line — run as long as you like. The timer pauses if you stop typing for more than 3 seconds.',
     hChar: 'Character', hScene: 'Scene', hTrack: 'Track', hText: 'Text',
     'char.cop': '👮 Cop', 'char.thief': '🦹 Thief',
@@ -699,8 +799,9 @@ function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"f
     ghostSlower: (who, dt, chal) => `👻 ${dt}s slower than <b>${who}</b>${chal ? ' — try again?' : ''}`,
     ghostTime: (who, role, T) => `👻 <b>${cap(who)}</b> ${DEED_EN[role]} in ${T}s`,
     winChase: 'Caught!', winEscape: 'Escaped!', loseChase: 'The thief got away…', loseEscape: 'Busted…',
-    subChal: (name, n, lv) => `Challenge from ${name} · Level ${n} · ${lv}`,
+    subChal: (name, lvl) => `Challenge from ${name} · ${lvl}`,
     subLose: w => `This level needs about ${w} WPM — give it another go`, subAll: 'All levels cleared! Go back and get 3 stars on each one',
+    subEvent: s => s >= 3 ? 'Perfect! A flawless holiday night' : s === 2 ? "Nice! Don't miss any power-ups for 3 stars" : 'You won! Reach 95% accuracy for 2 stars',
     sub3: 'Perfect! Next level unlocked', sub2: "Next level unlocked · Don't miss any power-ups for 3 stars", sub1: 'Next level unlocked · Reach 95% accuracy for 2 stars',
     stAcc: 'Accuracy %', stTime: 'Time s', stItems: 'Power-ups',
     titleDrill: 'Drill complete', titleZen: 'Zen complete',
@@ -712,14 +813,31 @@ function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"f
     shareAlt: 'Result card', save: 'Save image', copy: 'Copy image', close: 'Close',
     saved: 'Saved to your Downloads folder', copied: 'Copied — paste it straight into a chat', copyFail: 'Your browser won\'t let us copy images — use "Save image" instead',
     fileName: 'chasing-keys-result.png', chalTitle: '⚔️ Send a challenge',
-    chalDesc: (n, lv, role, T, w) => `Level ${n} · ${lv} · ${DEED_EN[role]} in ${T}s · ${w} WPM. ` +
+    chalDesc: (lvl, role, T, w) => `${lvl} · ${DEED_EN[role]} in ${T}s · ${w} WPM. ` +
       'Whoever opens the link races the ghost of this run, typing the exact same text.',
     namePh: 'Your name (optional, shown to them)', copyLink: 'Copy link', linkCopied: 'Copied — just paste it to a friend',
     linkManual: "Couldn't copy automatically — the link is selected, press Ctrl/⌘ + C",
-    cardSub: (n, lv, role) => `Level ${n} · ${lv} · I played the ${role === 'chase' ? 'cop' : 'thief'}`, cardBeat: name => ` · Beat ${name}'s ghost`,
+    cardSub: (lvl, role) => `${lvl} · I played the ${role === 'chase' ? 'cop' : 'thief'}`, cardBeat: name => ` · Beat ${name}'s ghost`,
     cardHeat: "This round's key heatmap · green = solid, red = weak", cardUrl: url => `Race me → ${url}`,
     'level.l1': 'Morning Warm-up', 'level.l2': 'Park Curves', 'level.l3': 'Dusk Streets', 'level.l4': 'Rush Hour',
     'level.l5': 'First Snow', 'level.l6': 'Frozen Ring', 'level.l7': 'Neon Night', 'level.l8': 'Midnight Chase',
+    lvLabel: (n, lv) => `Level ${n} · ${lv}`, eventLabel: (lv, d) => `🎄 ${lv} (${d})`,
+    hDiff: 'Difficulty', 'diff.easy': 'Easy', 'diff.normal': 'Normal', 'diff.hard': 'Hard', 'diff.custom': 'Custom',
+    diffName: (d, w) => `${d} ${w} WPM`, evBest: d => `Best: ${d}`,
+    storyNote: (author, title, year, pct) => `📖 Text: ${author}, <i>${title}</i> (${year}) · Each round picks up where you left off · ${pct}% read`,
+    eventTag: (from, to) => `Limited-time event · ${from} – ${to}`,
+    eventDate: (m, d) => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][m - 1] + ' ' + d,
+    'level.xmas': 'Holiday Night Chase',
+    'theme.xmas': '🎄 Christmas Eve', 'source.magi': '🎁 The Gift of the Magi',
+    zenStoryNote: (author, title, year) => `📖 ${author}, <i>${title}</i> (${year}): the full text, about 11,000 characters. ` +
+      'Type the whole story and your total time is recorded. Press Esc to save your progress and time, and pick up there next run (the timer stops while you rest).',
+    zenStoryProg: (pct, time) => `Progress: <b>${pct}%</b> read, <b>${time}</b> so far`,
+    zenStoryBest: (time, w, a, day) => `Fastest full read: <b>${time}</b> · ${w} WPM · ${a}% accuracy (${day})`,
+    zenRestart: 'Clear progress and start over', dayFmt: (y, m, d) => `${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][m - 1]} ${d}, ${y}`,
+    titleStoryDone: 'Story complete!', subStoryDone: (title, rec) => `You typed all of ${title}` + (rec ? ' · 🏆 New record' : ''),
+    subStoryProg: (pct, time) => `${pct}% read, ${time} so far. Pick up here next time`,
+    stStoryTime: 'Full story', stThisRun: 'This run',
+    cardStoryDone: (author, title) => `Typed all of ${author}'s ${title}`,
   };
 
   const STR = { zh, en };
@@ -771,6 +889,11 @@ function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"f
 //   theme = 场景主题：day / dusk / snow / night      track = 赛道：clover / bean / block / star
 //   pool  = 用哪一组练习文本（easy / prose）          items = 这一关出现几个道具
 // 菜单里打开"符号特训"时，所有关卡都改用 symbols 这一组。
+// 限时活动关卡（带 event 的）必须排在常规关卡后面：它们不参与解锁，只在活动日期内出现。
+//   event.from / event.to = 开始和结束日期 [月, 日]（按玩家本地时间，可以跨年）
+//   网址加 ?event=xmas 可以随时强制打开，?event=off 强制关闭，方便测试
+//   diffs = 玩家可选的几档难度（目标 WPM），range = "自定义"滑块的范围；wpm 是默认难度
+//   story = 用 STORIES 里的哪篇故事当文本（按原文顺序打，每局接着上次读到的地方；不受"符号特训"开关影响）
 window.LEVELS = [
   { id: 'l1', name: '清晨热身', theme: 'day',   track: 'clover', wpm: 12, pool: 'easy',  items: 3 },
   { id: 'l2', name: '公园弯道', theme: 'day',   track: 'bean',   wpm: 18, pool: 'easy',  items: 3 },
@@ -780,6 +903,8 @@ window.LEVELS = [
   { id: 'l6', name: '冰封环线', theme: 'snow',  track: 'clover', wpm: 44, pool: 'prose', items: 4 },
   { id: 'l7', name: '霓虹夜',   theme: 'night', track: 'block',  wpm: 54, pool: 'prose', items: 4 },
   { id: 'l8', name: '午夜追击', theme: 'night', track: 'star',   wpm: 68, pool: 'prose', items: 4 },
+  { id: 'xmas', name: '圣诞夜追击', theme: 'xmas', track: 'star', wpm: 25, story: 'magi', items: 4, event: { from: [11, 22], to: [1, 6] },
+    diffs: { easy: 15, normal: 25, hard: 40 }, range: [10, 120] },
 ];
 
 window.TEXT_POOLS = {
@@ -862,6 +987,95 @@ window.EXTRA_WORDS = (
   'why who what when where which while white whole window winter without world would write wrong ' +
   'much must most more move many made mind mine miss moon morning mother music mountain minute middle'
 ).split(' ');
+
+// 整篇故事：活动关卡用。每局从某一句开始，按原文顺序往下打。
+// 《麦琪的礼物》The Gift of the Magi，O. Henry，1905 年发表，公有领域。
+// 原文取自维基文库所收 1906 年 The Four Million 版；为了能直接用键盘打，弯引号换成直引号、破折号换成 " - "，
+// 并改正了该版的一处排印错误（Merry Chistmas → Merry Christmas），其余一字未改。
+window.STORIES = {
+  magi: { title: 'The Gift of the Magi', author: 'O. Henry', year: 1905, paras: [
+    "One dollar and eighty-seven cents. That was all. And sixty cents of it was in pennies. Pennies saved one and two at a time by bulldozing the grocer and the vegetable man and the butcher until one's cheeks burned with the silent imputation of parsimony that such close dealing implied. Three times Della counted it. One dollar and eighty-seven cents. And the next day would be Christmas.",
+    "There was clearly nothing to do but flop down on the shabby little couch and howl. So Della did it. Which instigates the moral reflection that life is made up of sobs, sniffles, and smiles, with sniffles predominating.",
+    "While the mistress of the home is gradually subsiding from the first stage to the second, take a look at the home. A furnished flat at $8 per week. It did not exactly beggar description, but it certainly had that word on the lookout for the mendicancy squad.",
+    "In the vestibule below was a letter-box into which no letter would go, and an electric button from which no mortal finger could coax a ring. Also appertaining thereunto was a card bearing the name \"Mr. James Dillingham Young.\"",
+    "The \"Dillingham\" had been flung to the breeze during a former period of prosperity when its possessor was being paid $30 per week. Now, when the income was shrunk to $20, the letters of \"Dillingham\" looked blurred, as though they were thinking seriously of contracting to a modest and unassuming D. But whenever Mr. James Dillingham Young came home and reached his flat above he was called \"Jim\" and greatly hugged by Mrs. James Dillingham Young, already introduced to you as Della. Which is all very good.",
+    "Della finished her cry and attended to her cheeks with the powder rag. She stood by the window and looked out dully at a grey cat walking a grey fence in a grey backyard. To-morrow would be Christmas Day, and she had only $1.87 with which to buy Jim a present. She had been saving every penny she could for months, with this result. Twenty dollars a week doesn't go far. Expenses had been greater than she had calculated. They always are. Only $1.87 to buy a present for Jim. Her Jim. Many a happy hour she had spent planning for something nice for him. Something fine and rare and sterling - something just a little bit near to being worthy of the honour of being owned by Jim.",
+    "There was a pier-glass between the windows of the room. Perhaps you have seen a pier-glass in an $8 flat. A very thin and very agile person may, by observing his reflection in a rapid sequence of longitudinal strips, obtain a fairly accurate conception of his looks. Della, being slender, had mastered the art.",
+    "Suddenly she whirled from the window and stood before the glass. Her eyes were shining brilliantly, but her face had lost its colour within twenty seconds. Rapidly she pulled down her hair and let it fall to its full length.",
+    "Now, there were two possessions of the James Dillingham Youngs in which they both took a mighty pride. One was Jim's gold watch that had been his father's and his grandfather's. The other was Della's hair. Had the Queen of Sheba lived in the flat across the airshaft, Della would have let her hair hang out the window some day to dry just to depreciate Her Majesty's jewels and gifts. Had King Solomon been the janitor, with all his treasures piled up in the basement, Jim would have pulled out his watch every time he passed, just to see him pluck at his beard from envy.",
+    "So now Della's beautiful hair fell about her, rippling and shining like a cascade of brown waters. It reached below her knee and made itself almost a garment for her. And then she did it up again nervously and quickly. Once she faltered for a minute and stood still while a tear or two splashed on the worn red carpet.",
+    "On went her old brown jacket; on went her old brown hat. With a whirl of skirts and with the brilliant sparkle still in her eyes, she fluttered out the door and down the stairs to the street.",
+    "Where she stopped the sign read: \"Mme. Sofronie. Hair Goods of All Kinds.\" One flight up Della ran, and collected herself, panting. Madame, large, too white, chilly, hardly looked the \"Sofronie.\"",
+    "\"Will you buy my hair?\" asked Della.",
+    "\"I buy hair,\" said Madame. \"Take yer hat off and let's have a sight at the looks of it.\"",
+    "Down rippled the brown cascade.",
+    "\"Twenty dollars,\" said Madame, lifting the mass with a practised hand.",
+    "\"Give it to me quick,\" said Della,",
+    "Oh, and the next two hours tripped by on rosy wings. Forget the hashed metaphor. She was ransacking the stores for Jim's present.",
+    "She found it at last. It surely had been made for Jim and no one else. There was no other like it in any of the stores, and she had turned all of them inside out. It was a platinum fob chain simple and chaste in design, properly proclaiming its value by substance alone and not by meretricious ornamentation - as all good things should do. It was even worthy of The Watch. As soon as she saw it she knew that it must be Jim's. It was like him. Quietness and value - the description applied to both. Twenty-one dollars they took from her for it, and she hurried home with the 87 cents. With that chain on his watch Jim might be properly anxious about the time in any company. Grand as the watch was, he sometimes looked at it on the sly on account of the old leather strap that he used in place of a chain.",
+    "When Della reached home her intoxication gave way a little to prudence and reason. She got out her curling irons and lighted the gas and went to work repairing the ravages made by generosity added to love. Which is always a tremendous task, dear friends - a mammoth task.",
+    "Within forty minutes her head was covered with tiny, close-lying curls that made her look wonderfully like a truant schoolboy. She looked at her reflection in the mirror long, carefully, and critically.",
+    "\"If Jim doesn't kill me,\" she said to herself, \"before he takes a second look at me, he'll say I look like a Coney Island chorus girl. But what could I do - oh! what could I do with a dollar and eighty-seven cents?\"",
+    "At 7 o'clock the coffee was made and the frying-pan was on the back of the stove hot and ready to cook the chops.",
+    "Jim was never late. Della doubled the fob chain in her hand and sat on the corner of the table near the door that he always entered. Then she heard his step on the stair away down on the first flight, and she turned white for just a moment. She had a habit of saying little silent prayers about the simplest everyday things, and now she whispered: \"Please God, make him think I am still pretty.\"",
+    "The door opened and Jim stepped in and closed it. He looked thin and very serious. Poor fellow, he was only twenty-two - and to be burdened with a family! He needed a new overcoat and he was without gloves.",
+    "Jim stopped inside the door, as immovable as a setter at the scent of quail. His eyes were fixed upon Della, and there was an expression in them that she could not read, and it terrified her. It was not anger, nor surprise, nor disapproval, nor horror, nor any of the sentiments that she had been prepared for. He simply stared at her fixedly with that peculiar expression on his face.",
+    "Della wriggled off the table and went for him.",
+    "\"Jim, darling,\" she cried, \"don't look at me that way. I had my hair cut off and sold it because I couldn't have lived through Christmas without giving you a present. It'll grow out again - you won't mind, will you? I just had to do it. My hair grows awfully fast. Say 'Merry Christmas!' Jim, and let's be happy. You don't know what a nice - what a beautiful, nice gift I've got for you.\"",
+    "\"You've cut off your hair?\" asked Jim, laboriously, as if he had not arrived at that patent fact yet even after the hardest mental labour.",
+    "\"Cut it off and sold it,\" said Della. \"Don't you like me just as well, anyhow? I'm me without my hair, ain't I?\"",
+    "Jim looked about the room curiously.",
+    "\"You say your hair is gone?\" he said, with an air almost of idiocy.",
+    "\"You needn't look for it,\" said Della. \"It's sold, I tell you - sold and gone, too. It's Christmas Eve, boy. Be good to me, for it went for you. Maybe the hairs of my head were numbered,\" she went on with a sudden serious sweetness, \"but nobody could ever count my love for you. Shall I put the chops on, Jim?\"",
+    "Out of his trance Jim seemed quickly to wake. He enfolded his Della. For ten seconds let us regard with discreet scrutiny some inconsequential object in the other direction. Eight dollars a week or a million a year - what is the difference? A mathematician or a wit would give you the wrong answer. The magi brought valuable gifts, but that was not among them. This dark assertion will be illuminated later on.",
+    "Jim drew a package from his overcoat pocket and threw it upon the table.",
+    "\"Don't make any mistake, Dell,\" he said, \"about me. I don't think there's anything in the way of a haircut or a shave or a shampoo that could make me like my girl any less. But if you'll unwrap that package you may see why you had me going a while at first.\"",
+    "White fingers and nimble tore at the string and paper. And then an ecstatic scream of joy; and then, alas! a quick feminine change to hysterical tears and wails, necessitating the immediate employment of all the comforting powers of the lord of the flat.",
+    "For there lay The Combs - the set of combs, side and back, that Della had worshipped for long in a Broadway window. Beautiful combs, pure tortoise shell, with jewelled rims - just the shade to wear in the beautiful vanished hair. They were expensive combs, she knew, and her heart had simply craved and yearned over them without the least hope of possession. And now, they were hers, but the tresses that should have adorned the coveted adornments were gone.",
+    "But she hugged them to her bosom, and at length she was able to look up with dim eyes and a smile and say: \"My hair grows so fast, Jim!\"",
+    "And then Della leaped up like a little singed cat and cried, \"Oh, oh!\"",
+    "Jim had not yet seen his beautiful present. She held it out to him eagerly upon her open palm. The dull precious metal seemed to flash with a reflection of her bright and ardent spirit.",
+    "\"Isn't it a dandy, Jim? I hunted all over town to find it. You'll have to look at the time a hundred times a day now. Give me your watch. I want to see how it looks on it.\"",
+    "Instead of obeying, Jim tumbled down on the couch and put his hands under the back of his head and smiled.",
+    "\"Dell,\" said he, \"let's put our Christmas presents away and keep 'em a while. They're too nice to use just at present. I sold the watch to get the money to buy your combs. And now suppose you put the chops on.\"",
+    "The magi, as you know, were wise men - wonderfully wise men - who brought gifts to the Babe in the manger. They invented the art of giving Christmas presents. Being wise, their gifts were no doubt wise ones, possibly bearing the privilege of exchange in case of duplication. And here I have lamely related to you the uneventful chronicle of two foolish children in a flat who most unwisely sacrificed for each other the greatest treasures of their house. But in a last word to the wise of these days let it be said that of all who give gifts these two were the wisest. Of all who give and receive gifts, such as they are wisest. Everywhere they are wisest. They are the magi."
+  ] },
+};
+
+// 把故事切成"可以开局的位置"：每段的开头，以及句末（. ! ?，可带收尾引号）后面紧跟大写字母或开引号的地方。
+// Mr. / Mrs. / Mme. 这类缩写后面不算句末。返回 { text: 整篇连成一行, starts: [每个开局位置的下标] }
+window.storyIndex = function (name) {
+  const st = window.STORIES[name];
+  if (st.index) return st.index;
+  let text = '';
+  const starts = [];
+  st.paras.forEach(p => {
+    if (text) text += ' ';
+    const base = text.length;
+    starts.push(base);
+    const re = /[.!?]"? (?=["A-Z])/g;
+    let m;
+    while ((m = re.exec(p))) {
+      if (/\b(Mr|Mrs|Mme)\.$/.test(p.slice(0, m.index + 1))) continue;
+      starts.push(base + m.index + m[0].length);
+    }
+    text += p;
+  });
+  return (st.index = { text, starts });
+};
+// 从第 from 个开局位置起，一句一句往后取，直到至少 minLen 个字符；读到结尾就从头接上。
+// 返回一句句的片段 [{ s: 文字, i: 这一句的开局编号 }]，方便调用方逐句加工（例如触屏简化）后再拼起来
+window.storyPieces = function (name, from, minLen) {
+  const { text, starts } = window.storyIndex(name), n = starts.length, out = [];
+  let len = 0, i = ((from % n) + n) % n;
+  while (len < minLen) {
+    const a = starts[i], b = i + 1 < n ? starts[i + 1] : text.length;
+    const s = text.slice(a, b).trim();
+    out.push({ s, i }); len += s.length + 1;
+    i = (i + 1) % n;
+  }
+  return out;
+};
 
 // 生成至少 minLen 个字符的练习文本，并按单词边界切成行。
 // rnd 可选：传入一个固定种子的随机函数，就能每次得到同一段文本（挑战链接用它让双方打同样的字）。
@@ -1101,7 +1315,16 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
       walls: ['#2a2c4e', '#33305a', '#24364e', '#3a2a55', '#2f2f44', '#1f2a4a'],
       lit: ['#ff5dd0', '#5df0ff', '#ffe95d', '#8dff7a'], unlit: '#0c0d1e', litRatio: 0.6,
     },
+    // 圣诞夜（限时活动）：雪地 + 夜色，窗户是暖黄和红绿彩灯；xmas 打开额外的节日装饰和角色的圣诞装扮
+    xmas: {
+      sky: ['#060a26', '#111c4a', '#24346c', '#4d5e96'], fog: [0x18234f, 45, 210],
+      hemi: [0xa8b8ff, 0x3a4a6a, 1.8], sun: [0xb8c6ff, 1.4], follow: 70,
+      ground: 0xe6edf7, sidewalk: 0xc3cad8, road: 0x353a4e, leaf: 0x1f6b45, bulb: 0xffe9a8,
+      walls: ['#a8504a', '#5a6f9e', '#6f9a86', '#9a7fb0', '#c9a978', '#7a7f99'],
+      lit: ['#ffe9a8', '#ffe9a8', '#ffd166', '#ff6b6b', '#7be0a4'], unlit: '#1c2038', litRatio: 0.55, snow: true, xmas: true,
+    },
   };
+  const XMAS_COLORS = [0xff4d4d, 0x3ddc84, 0xffd166, 0x5db8ff, 0xffffff];   // 彩灯和挂饰的颜色
 
   // ---------- 赛道（闭合曲线，一圈就是一局） ----------
   const TRACKS = {
@@ -1120,7 +1343,7 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
 
   const ROAD_HALF = 4.2;
   const snowMat = new T.PointsMaterial({ color: 0xffffff, size: 0.35, transparent: true, opacity: 0.9, fog: false });
-  let curve = null, levelGroup = null, builtKey = '', snow = null;
+  let curve = null, levelGroup = null, builtKey = '', snow = null, lights = null, topStar = null;
   const levels = {};   // 建好的场景按 "主题/赛道" 存着不销毁：再切回来不用重建，着色器也不会被回收后重新编译
   const W = { scene, camera, renderer, lapLen: 1, sun, SUN_OFFSET, followLight, resize, pixelRatio: 1 };
   resize();
@@ -1147,6 +1370,10 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     return t;
   }
 
+  // 横向条纹贴图：糖果棍样式的路灯杆和拱门柱子
+  const stripeTex = (a, b, n) => canvasTex(8, n * 8, g => { for (let i = 0; i < n; i++) { g.fillStyle = i % 2 ? b : a; g.fillRect(0, i * 8, 8, 8); } }, true);
+  const _col = new T.Color();
+
   function build(themeName, trackName) {
     const key = themeName + '/' + trackName;
     if (key === builtKey) return;
@@ -1155,7 +1382,8 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     const L = levels[key] || make(themeName, trackName);
     const th = THEMES[themeName];
     if (levelGroup) scene.remove(levelGroup);
-    levelGroup = L.G; curve = L.curve; snow = L.snow; W.lapLen = L.lapLen;
+    levelGroup = L.G; curve = L.curve; snow = L.snow; lights = L.lights; topStar = L.star; W.lapLen = L.lapLen;
+    setCostume(!!th.xmas);
     scene.add(L.G);
     scene.background = L.sky;
     scene.fog.color.setHex(th.fog[0]); scene.fog.near = th.fog[1]; scene.fog.far = th.fog[2];
@@ -1249,15 +1477,35 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     };
     let seed = 7 + trackName.length * 13;
     const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    // 圣诞夜：赛道围起来的中间立一棵大圣诞树。离赛道中心最近、又离路足够远的地方
+    let plaza = null;
+    if (th.xmas) {
+      const cx = samples.reduce((a, s) => a + s.x, 0) / samples.length, cz = samples.reduce((a, s) => a + s.z, 0) / samples.length;
+      let best = null, bestD = Infinity;
+      for (let x = cx - 60; x <= cx + 60; x += 4) for (let z = cz - 60; z <= cz + 60; z += 4) {
+        const d = Math.hypot(x - cx, z - cz);
+        if (d < bestD && distToRoad(x, z) > 24) { best = [x, z]; bestD = d; }
+      }
+      if (best) plaza = { x: best[0], z: best[1], r: 22 };
+    }
     const bMats = th.walls.map(wall => {
+      // 圣诞夜：亮着的窗户另外画一张"发光贴图"，让彩灯窗户在夜里真的亮起来，而不是被夜色压暗
+      const glow = th.xmas ? document.createElement('canvas') : null, gg = glow && glow.getContext('2d');
+      if (glow) { glow.width = 64; glow.height = 128; gg.fillStyle = '#000'; gg.fillRect(0, 0, 64, 128); }
       const map = canvasTex(64, 128, g => {
         g.fillStyle = wall; g.fillRect(0, 0, 64, 128);
         for (let y = 0; y < 8; y++) for (let x = 0; x < 4; x++) {
-          g.fillStyle = rnd() < th.litRatio ? th.lit[Math.floor(rnd() * th.lit.length)] : th.unlit;
+          const lit = rnd() < th.litRatio;
+          g.fillStyle = lit ? th.lit[Math.floor(rnd() * th.lit.length)] : th.unlit;
           g.fillRect(4 + x * 15, 5 + y * 15.5, 10, 10);
+          if (lit && gg) { gg.fillStyle = g.fillStyle; gg.globalAlpha = 0.85; gg.fillRect(4 + x * 15, 5 + y * 15.5, 10, 10); }
         }
       }, true);
       const side = new T.MeshLambertMaterial({ map });
+      if (glow) {
+        const em = new T.CanvasTexture(glow); em.colorSpace = T.SRGBColorSpace; em.magFilter = T.NearestFilter;
+        side.emissive.setHex(0xffffff); side.emissiveMap = em;
+      }
       const top = new T.MeshLambertMaterial({ color: th.snow ? '#f2f5fa' : wall });
       return [side, side, top, top, side, side];
     });
@@ -1268,6 +1516,7 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
       const dist = distToRoad(x, z);
       if (dist < ROAD_HALF + 3.5 + Math.max(w, d) * 0.75) continue;
       if (rnd() < 0.12) continue;
+      if (plaza && Math.hypot(x - plaza.x, z - plaza.z) < plaza.r + Math.max(w, d) * 0.75) continue;
       const h = 6 + rnd() * rnd() * 34;
       const b = new T.Mesh(box, bMats[Math.floor(rnd() * bMats.length)]);
       b.scale.set(w, h, d); b.position.set(x, h / 2, z);
@@ -1278,7 +1527,10 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     // 路灯和树
     {
       const n = Math.floor(lapLen / 22);
-      const pole = new T.InstancedMesh(new T.CylinderGeometry(0.12, 0.16, 6, 6), new T.MeshLambertMaterial({ color: 0x33354d }), n);
+      const candy = th.xmas ? stripeTex('#d8343a', '#f7f3ee', 10) : null;
+      const pole = new T.InstancedMesh(new T.CylinderGeometry(th.xmas ? 0.16 : 0.12, 0.16, 6, 8),
+        th.xmas ? new T.MeshLambertMaterial({ map: candy }) : new T.MeshLambertMaterial({ color: 0x33354d }), n);
+      const balls = th.xmas ? new T.InstancedMesh(new T.SphereGeometry(0.2, 8, 6), new T.MeshBasicMaterial(), n * 4) : null;
       const bulb = new T.InstancedMesh(new T.SphereGeometry(0.45, 10, 8), new T.MeshBasicMaterial({ color: th.bulb, fog: false }), n);
       const trunk = new T.InstancedMesh(new T.CylinderGeometry(0.25, 0.3, 1.6, 6), new T.MeshLambertMaterial({ color: 0x6b4a3a }), n);
       const leaf = new T.InstancedMesh(new T.ConeGeometry(1.5, 3.6, 7), new T.MeshLambertMaterial({ color: th.leaf, flatShading: true }), n);
@@ -1291,25 +1543,90 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
         o.position.y = 6.2; o.updateMatrix(); bulb.setMatrixAt(i, o.matrix);
         frameAt((i + 0.5) / n, _p, _t);
         o.position.set(_p.x - _t.z * side * off, 0.8, _p.z + _t.x * side * off); o.updateMatrix(); trunk.setMatrixAt(i, o.matrix);
-        o.scale.setScalar(0.8 + rnd() * 0.5); o.position.y = 3.2; o.updateMatrix(); leaf.setMatrixAt(i, o.matrix);
+        const sc = 0.8 + rnd() * 0.5;
+        o.scale.setScalar(sc); o.position.y = 3.2; o.updateMatrix(); leaf.setMatrixAt(i, o.matrix);
+        if (balls) {             // 每棵小树挂 4 个彩球，贴在圆锥表面上
+          const tx = o.position.x, tz = o.position.z;
+          o.scale.setScalar(1);
+          for (let k = 0; k < 4; k++) {
+            const hy = 0.25 + 0.55 * rnd(), a = rnd() * Math.PI * 2, r = 1.5 * sc * (1 - hy) + 0.12;
+            o.position.set(tx + Math.cos(a) * r, 3.2 + (hy - 0.5) * 3.6 * sc, tz + Math.sin(a) * r); o.updateMatrix();
+            balls.setMatrixAt(i * 4 + k, o.matrix);
+            balls.setColorAt(i * 4 + k, _col.setHex(XMAS_COLORS[(i + k) % XMAS_COLORS.length]));
+          }
+        }
       }
       G.add(pole, bulb, trunk, leaf);
+      if (balls) G.add(balls);
     }
 
     // 终点拱门（u = 0，跑完一圈的地方）
     {
       const tex = canvasTex(128, 16, g => {
-        for (let x = 0; x < 16; x++) for (let y = 0; y < 2; y++) { g.fillStyle = (x + y) % 2 ? '#fff' : '#111'; g.fillRect(x * 8, y * 8, 8, 8); }
+        for (let x = 0; x < 16; x++) for (let y = 0; y < 2; y++) { g.fillStyle = (x + y) % 2 ? '#fff' : th.xmas ? '#c92a32' : '#111'; g.fillRect(x * 8, y * 8, 8, 8); }
       }, true);
       const arch = new T.Group();
+      const postMat = th.xmas ? new T.MeshLambertMaterial({ map: stripeTex('#d8343a', '#f7f3ee', 12) }) : new T.MeshLambertMaterial({ color: 0xffd166 });
       for (const s of [-1, 1]) {
-        const p = new T.Mesh(new T.BoxGeometry(0.6, 7, 0.6), new T.MeshLambertMaterial({ color: 0xffd166 }));
+        const p = new T.Mesh(new T.BoxGeometry(0.6, 7, 0.6), postMat);
         p.position.set(s * (ROAD_HALF + 0.6), 3.5, 0); p.castShadow = true; arch.add(p);
       }
       const beam = new T.Mesh(new T.BoxGeometry(ROAD_HALF * 2 + 1.8, 1.3, 0.4), new T.MeshBasicMaterial({ map: tex }));
       beam.position.y = 6.6; arch.add(beam);
       place(arch, 0);
       G.add(arch);
+    }
+
+    // 圣诞夜：人行道外沿两侧各一串彩灯（会闪），加上中间的大圣诞树
+    let lightStrip = null, star = null;
+    if (th.xmas) {
+      const gap = 2.2, n = Math.floor(lapLen / gap);
+      lightStrip = new T.InstancedMesh(new T.SphereGeometry(0.16, 6, 4), new T.MeshBasicMaterial({ fog: false }), n * 2);
+      for (let i = 0; i < n; i++) {
+        frameAt(i / n, _p, _t);
+        for (const side of [-1, 1]) {
+          const off = (ROAD_HALF + 2.05) * side, j = i * 2 + (side > 0 ? 1 : 0);
+          o.rotation.set(0, 0, 0); o.scale.setScalar(1);
+          o.position.set(_p.x + _t.z * off, 0.22, _p.z - _t.x * off); o.updateMatrix();
+          lightStrip.setMatrixAt(j, o.matrix);
+          lightStrip.setColorAt(j, _col.setHex(XMAS_COLORS[(i + (side > 0 ? 2 : 0)) % XMAS_COLORS.length]));
+        }
+      }
+      lightStrip.userData.base = lightStrip.instanceColor.array.slice();   // 原始颜色，闪烁时在它的基础上调亮暗
+      G.add(lightStrip);
+      if (plaza) {
+        const tree = new T.Group(); tree.position.set(plaza.x, 0, plaza.z);
+        const pine = new T.MeshLambertMaterial({ color: 0x1a5e3c, flatShading: true });
+        const trunk = new T.Mesh(new T.CylinderGeometry(0.9, 1.1, 3, 8), new T.MeshLambertMaterial({ color: 0x5a3a2a }));
+        trunk.position.y = 1.5; tree.add(trunk);
+        const tiers = [[7.5, 7, 5.5], [6, 6, 10], [4.4, 5, 14], [2.8, 4, 17.5]];   // [底半径, 高, 中心高度]
+        tiers.forEach(([r, h, y]) => {
+          const c = new T.Mesh(new T.ConeGeometry(r, h, 10), pine); c.position.y = y; c.castShadow = true; tree.add(c);
+        });
+        // 挂饰和缠绕的灯：沿着各层圆锥表面撒点
+        const orn = new T.InstancedMesh(new T.SphereGeometry(0.5, 8, 6), new T.MeshLambertMaterial(), 48);
+        const wrap = new T.InstancedMesh(new T.SphereGeometry(0.2, 6, 4), new T.MeshBasicMaterial({ fog: false }), 140);
+        const onTree = (q, out) => {          // q: 0 树底 ~ 1 树顶，返回圆锥表面上的半径和高度
+          const tier = tiers[Math.min(tiers.length - 1, Math.floor(q * tiers.length))], f = (q * tiers.length) % 1;
+          out.r = tier[0] * (1 - f * 0.85) + 0.15; out.y = tier[2] - tier[1] / 2 + f * tier[1] * 0.85;
+          return out;
+        };
+        const at = {};
+        for (let k = 0; k < 48; k++) {
+          onTree(rnd() * 0.95, at); const a = rnd() * Math.PI * 2;
+          o.position.set(Math.cos(a) * at.r, at.y, Math.sin(a) * at.r); o.updateMatrix();
+          orn.setMatrixAt(k, o.matrix); orn.setColorAt(k, _col.setHex(XMAS_COLORS[k % 4]));
+        }
+        for (let k = 0; k < 140; k++) {        // 从下往上绕 7 圈的灯串
+          const q = k / 140; onTree(q, at); const a = q * Math.PI * 2 * 7;
+          o.position.set(Math.cos(a) * at.r, at.y, Math.sin(a) * at.r); o.updateMatrix();
+          wrap.setMatrixAt(k, o.matrix); wrap.setColorAt(k, _col.setHex(k % 3 ? 0xffe9a8 : XMAS_COLORS[k % 5]));
+        }
+        star = new T.Mesh(new T.OctahedronGeometry(1.3, 0), new T.MeshBasicMaterial({ color: 0xffd166, fog: false }));
+        star.position.y = 20.6; star.scale.set(1, 1.3, 0.45);
+        tree.add(orn, wrap, star);
+        G.add(tree);
+      }
     }
 
     // 雪花：一团跟着镜头走的粒子
@@ -1322,7 +1639,7 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
       snow.frustumCulled = false;
       G.add(snow);
     }
-    const L = levels[themeName + '/' + trackName] = { G, curve, snow, lapLen, sky };
+    const L = levels[themeName + '/' + trackName] = { G, curve, snow, lapLen, sky, lights: lightStrip, star };
     curve = prevCurve;
     return L;
   }
@@ -1373,8 +1690,19 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     resize();
   }
 
+  let twinkleT = 0;
   function update(dt) {
     adaptQuality();
+    if (topStar) topStar.rotation.y += dt * 0.8;
+    if (lights && (twinkleT += dt) > 0.35) {   // 每 0.35 秒随机让一部分灯暗下去，看起来在闪
+      twinkleT = 0;
+      const c = lights.instanceColor.array, base = lights.userData.base;
+      for (let i = 0; i < c.length; i += 3) {
+        const k = Math.random() < 0.18 ? 0.25 : 1;
+        c[i] = base[i] * k; c[i + 1] = base[i + 1] * k; c[i + 2] = base[i + 2] * k;
+      }
+      lights.instanceColor.needsUpdate = true;
+    }
     if (burstLife > 0) {
       burstLife += dt;
       for (let i = 0; i < BN; i++) {
@@ -1415,18 +1743,43 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     part(0.7, 0.7, 0.7, skin, 0, 2.75, 0);
     const eye = new T.MeshBasicMaterial({ color: 0x1b1f3a });
     part(0.1, 0.12, 0.02, eye, -0.16, 2.8, 0.36); part(0.1, 0.12, 0.02, eye, 0.16, 2.8, 0.36);
+    // 装扮：平时戴自己的帽子；圣诞夜两人都换成圣诞帽，飞贼的袋子变成红色礼物袋（见 setCostume）
+    const normal = [], xmas = [];
+    const fur = mat(0xf7f3ee);
+    const hat = new T.Group(); hat.position.set(0, 3.12, 0); hat.rotation.x = -0.3; body.add(hat);
+    part(0.84, 0.18, 0.84, fur, 0, 0, 0, hat);
+    const cone = new T.Mesh(new T.ConeGeometry(0.4, 0.82, 8), mat(0xd8343a, { flatShading: true }));
+    cone.position.y = 0.48; cone.castShadow = true; hat.add(cone);
+    const tip = new T.Object3D(); tip.position.y = 0.92; hat.add(tip);   // 帽尖：飞贼挂白绒球，巡警把警灯挪到这里
+    xmas.push(hat);
+    let sack = null;
     if (isCop) {
-      part(0.78, 0.26, 0.78, mat(0x1c2a5a), 0, 3.2, 0);
-      part(0.7, 0.07, 0.35, mat(0x111833), 0, 3.1, 0.5);
+      normal.push(part(0.78, 0.26, 0.78, mat(0x1c2a5a), 0, 3.2, 0));
+      normal.push(part(0.7, 0.07, 0.35, mat(0x111833), 0, 3.1, 0.5));
       part(0.16, 0.16, 0.03, mat(0xffd166, { metalness: 0.6, roughness: 0.3 }), 0.25, 2.0, 0.29);
     } else {
-      part(0.76, 0.3, 0.76, mat(0x2a2c3e), 0, 3.12, 0);          // 毛线帽
+      const pom = new T.Mesh(new T.SphereGeometry(0.14, 8, 6), fur); tip.add(pom);
+      normal.push(part(0.76, 0.3, 0.76, mat(0x2a2c3e), 0, 3.12, 0));          // 毛线帽
       part(0.72, 0.16, 0.03, mat(0x2a2c3e), 0, 2.8, 0.35);       // 眼罩
       const white = new T.MeshBasicMaterial({ color: 0xffffff });
       part(0.1, 0.1, 0.02, white, -0.16, 2.8, 0.37); part(0.1, 0.1, 0.02, white, 0.16, 2.8, 0.37);
-      const sack = new T.Mesh(new T.SphereGeometry(0.62, 10, 8), mat(0xc9a66b, { flatShading: true }));
+      sack = new T.Mesh(new T.SphereGeometry(0.62, 10, 8), mat(0xc9a66b, { flatShading: true }));
       sack.position.set(0, 2.0, -0.7); sack.scale.set(1, 1.15, 0.9); sack.castShadow = true; body.add(sack);
+      sack.userData.mats = [sack.material, mat(0xc0282f, { flatShading: true })];
+      // 从袋口露出来的礼物盒：绿盒子 + 金色丝带
+      const gift = new T.Group(); gift.position.set(0.1, 2.82, -0.72); gift.rotation.set(0.2, 0.5, 0.15); body.add(gift);
+      part(0.46, 0.4, 0.46, mat(0x2e9e5b), 0, 0, 0, gift);
+      const gold = mat(0xffd166);
+      part(0.48, 0.42, 0.1, gold, 0, 0, 0, gift); part(0.1, 0.42, 0.48, gold, 0, 0, 0, gift);
+      xmas.push(gift);
     }
+    xmas.forEach(m => { m.visible = false; });
+    g.userData.hatTip = tip;
+    g.userData.setCostume = (on, keepMats) => {
+      normal.forEach(m => { m.visible = !on; });
+      xmas.forEach(m => { m.visible = on; });
+      if (sack && !keepMats) sack.material = sack.userData.mats[on ? 1 : 0];
+    };
     const limb = (m, x, y, len, w) => {
       const pivot = new T.Group(); pivot.position.set(x, y, 0); body.add(pivot);
       part(w, len, w, m, 0, -len / 2, 0, pivot);
@@ -1482,6 +1835,17 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
   const sirenBulb = new T.Mesh(new T.SphereGeometry(0.16, 8, 6), new T.MeshBasicMaterial({ color: 0xff3344 }));
   sirenBulb.position.set(0, 3.42, 0); cop.add(sirenBulb);
 
+  // 换装：圣诞夜主题下戴圣诞帽。幽灵的材质统一是半透明青色，不换袋子颜色
+  let costume = false;
+  function setCostume(on) {
+    if (on === costume) return;
+    costume = on;
+    cop.userData.setCostume(on); thief.userData.setCostume(on);
+    ghosts.cop.userData.setCostume(on, true); ghosts.thief.userData.setCostume(on, true);
+    if (on) { cop.userData.hatTip.add(sirenBulb); sirenBulb.position.set(0, 0.08, 0); }
+    else { cop.add(sirenBulb); sirenBulb.position.set(0, 3.42, 0); }
+  }
+
   // 玩家头顶的箭头
   const arrow = new T.Mesh(new T.ConeGeometry(0.4, 0.8, 4), new T.MeshBasicMaterial({ color: 0xffd166 }));
   arrow.rotation.x = Math.PI; scene.add(arrow);
@@ -1518,7 +1882,7 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
   });
   warmOnly.push(ice, ice2, burstPts, ghosts.cop, ghosts.thief);
 
-  Object.assign(W, { cop, thief, ghosts, siren, sirenBulb, arrow, ice, ice2, burst, THEMES, TRACKS, ITEMS, itemLostMat, makeItem, frameAt, place, build, prebuild, update });
+  Object.assign(W, { cop, thief, ghosts, siren, sirenBulb, setCostume, arrow, ice, ice2, burst, THEMES, TRACKS, ITEMS, itemLostMat, makeItem, frameAt, place, build, prebuild, update });
   window.World = W;
 })();
 
@@ -1625,6 +1989,7 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
 // 游戏逻辑：菜单、闯关与 Zen 两种模式、打字输入、道具、结局动画、镜头、HUD。
 (function () {
   const W = window.World, T = THREE, LEVELS = window.LEVELS, KS = window.KeyStats;
+  const REG = LEVELS.filter(lv => !lv.event).length;   // 常规关卡数；限时活动关卡排在它们后面
   const $ = id => document.getElementById(id);
   const ROUND_SECONDS = 60;   // 按目标速度打字时，一局大约的时长
   const HEAD_START = 0.2;     // 被追的一方领先一圈的比例
@@ -1649,17 +2014,77 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
   let save = { unlocked: 1, stars: {}, best: {}, symbols: false, mode: 'campaign' };
   try { Object.assign(save, JSON.parse(localStorage.getItem('kc-save') || '{}')); } catch (e) {}
   // 存档可能来自旧版本或被改坏：关键字段夹回合法范围，免得菜单渲染时出错
-  save.unlocked = Math.max(1, Math.min(LEVELS.length, Math.round(+save.unlocked) || 1));
+  save.unlocked = Math.max(1, Math.min(REG, Math.round(+save.unlocked) || 1));
   if (!['campaign', 'zen', 'drill'].includes(save.mode)) save.mode = 'campaign';
   save.zen = Object.assign({ char: 'cop', theme: 'day', track: 'clover', source: 'prose', custom: '' }, save.zen);
   save.keys = save.keys || {};   // 每个键的累计统计，给弱键分析用
   save.ghosts = save.ghosts || {};                 // 每关每种身份最快的一局，用来当幽灵
   if (save.ghost === undefined) save.ghost = true; // 菜单里的"幽灵"开关
   save.name = save.name || '';                     // 发挑战链接时用的名字
+  save.diff = save.diff || {};                     // 活动关卡选的难度：{ xmas: { mode: 'normal', custom: 30 } }
+  save.story = save.story || {};                   // 故事读到哪一句了：{ magi: 12 }
+  // Zen 里整篇读故事：进度、累计用时（只算在打字的时间）、最好的完整用时
+  // { magi: { pos: 句子编号, t: 秒, chars, errors, best: { t, wpm, acc, date } } }
+  save.zenStory = save.zenStory || {};
   const persist = () => { try { localStorage.setItem('kc-save', JSON.stringify(save)); } catch (e) {} };
 
   let role = 'chase';
-  let levelIdx = Math.min(save.unlocked, LEVELS.length) - 1;
+  let levelIdx = Math.min(save.unlocked, REG) - 1;
+
+  // ---------- 限时活动 ----------
+  // 活动关卡只在日期范围内出现（玩家本地时间），不需要解锁，也不影响常规关卡的解锁
+  function eventOn(lv) {
+    const q = /[?&]event=(\w+)/.exec(location.search);
+    if (q) return q[1] === lv.id;                  // ?event=xmas 强制打开，?event=off 全部关闭
+    if (window.KC_FORCE_EVENT === lv.id) return true;   // 预发布环境用：不用等到日期就能测
+    const d = new Date(), v = (d.getMonth() + 1) * 100 + d.getDate();
+    const from = lv.event.from[0] * 100 + lv.event.from[1], to = lv.event.to[0] * 100 + lv.event.to[1];
+    return from <= to ? v >= from && v <= to : v >= from || v <= to;   // 跨年的活动（12 月到 1 月）
+  }
+  const EVENT_IDX = LEVELS.findIndex(lv => lv.event && eventOn(lv));   // 当前开着的活动关卡，-1 表示没有
+  const isLocked = i => LEVELS[i].event ? i !== EVENT_IDX : i >= save.unlocked;
+  // 活动期间打开网页，默认选中活动关卡。上次停在 Zen / 特训的玩家，每期活动只在第一次打开时切回闯关，
+  // 之后尊重他自己的选择（闯关按钮上会一直有个小红点提醒）
+  if (EVENT_IDX >= 0) {
+    const lv = LEVELS[EVENT_IDX], d = new Date();
+    const season = lv.id + '-' + (d.getMonth() + 1 < lv.event.from[0] ? d.getFullYear() - 1 : d.getFullYear());
+    levelIdx = EVENT_IDX;
+    if (save.seenEvent !== season) { save.seenEvent = season; save.mode = 'campaign'; persist(); }
+  }
+  // Zen 的圣诞场景和故事文本只在活动期间提供；活动结束后，选过它们的存档退回雪天 / 文章
+  const ZEN_EVENT = { theme: 'xmas', source: 'magi' };
+  if (EVENT_IDX < 0) {
+    if (save.zen.theme === 'xmas') save.zen.theme = 'snow';
+    if (save.zen.source === 'magi') save.zen.source = 'prose';
+  }
+  // ---------- 活动关卡的难度 ----------
+  // 一关的难度只由目标速度（WPM）决定：对手速度、一局的长度、对手用道具前允许的失误数都从它算出来。
+  // 常规关卡速度固定（靠它一关关解锁）；活动关卡由玩家在几档难度里选，或者用滑块自定义
+  const clampW = (lv, w) => Math.max(lv.range[0], Math.min(lv.range[1], Math.round(w)));
+  function diffOf(lv) {
+    const d = save.diff[lv.id] = Object.assign({ mode: 'normal', custom: 30 }, save.diff[lv.id]);
+    if (d.mode !== 'custom' && !(d.mode in lv.diffs)) d.mode = 'normal';
+    d.custom = clampW(lv, +d.custom || 30);
+    return d;
+  }
+  const chosenWpm = lv => { if (!lv.diffs) return lv.wpm; const d = diffOf(lv); return d.mode === 'custom' ? d.custom : lv.diffs[d.mode]; };
+  // 难度的叫法：正好是某一档就用那一档的名字，否则算"自定义"。例如"挑战 40 WPM""自定义 33 WPM"
+  const diffName = (lv, w) => t('diffName', t('diff.' + (Object.keys(lv.diffs).find(k => lv.diffs[k] === w) || 'custom')), w);
+  // 成绩、星级、幽灵的存档键：活动关卡按难度分开记（xmas@40），常规关卡就是关卡 id
+  const recKey = (lv, w) => lv.event ? lv.id + '@' + w : lv.id;
+  // 某个活动关卡赢过的最高难度和那一档的星级
+  function bestDiff(lv) {
+    let top = null;
+    for (const k in save.stars) {
+      const m = /^(.+)@(\d+)$/.exec(k);
+      if (m && m[1] === lv.id && save.stars[k] > 0 && (!top || +m[2] > top.w)) top = { w: +m[2], stars: save.stars[k] };
+    }
+    return top;
+  }
+  // "第 3 关 · 黄昏街区"；活动关卡没有序号，显示成"🎄 圣诞夜追击（挑战 40 WPM）"
+  const lvLabel = (i, w) => LEVELS[i].event ? t('eventLabel', lvName(LEVELS[i]), diffName(LEVELS[i], w || chosenWpm(LEVELS[i])))
+    : t('lvLabel', i + 1, lvName(LEVELS[i]));
+  const fmtDate = ([m, d]) => t('eventDate', m, d);
   let state = 'menu';         // menu | countdown | playing | over
   let g = null;               // 当前这一局的数据
   let menuPos = 0;
@@ -1701,14 +2126,16 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
     return ((t ^ t >>> 14) >>> 0) / 4294967296;
   };
-  const ghostKey = (lv, sym) => lv.id + '.' + role + (sym ? '.s' : '');
+  const ghostKey = (lv, sym, w) => recKey(lv, w) + '.' + role + (sym ? '.s' : '');
   const secs = t => t.toFixed(1);
   const lvName = lv => t('level.' + lv.id);
 
   // 挑战链接的格式：#c=版本.关卡.身份.符号.文本种子.用时(0.1秒,36进制).WPM.正确率.进度曲线.名字
+  // 活动关卡的"关卡"一栏带上难度：9-40 表示第 9 个关卡、目标 40 WPM。旧版游戏读到它会按默认难度打开，旧链接在新版里也按默认难度
   function challengeLink(run, name) {
     const base = /^https?:$/.test(location.protocol) ? location.origin + location.pathname : HOME_URL;
-    return base + '#c=' + [1, run.level + 1, run.role === 'chase' ? 'c' : 'e', run.sym ? 1 : run.touch ? 2 : 0, run.seed.toString(36),
+    const lvField = (run.level + 1) + (LEVELS[run.level].event ? '-' + run.target : '');
+    return base + '#c=' + [1, lvField, run.role === 'chase' ? 'c' : 'e', run.sym ? 1 : run.touch ? 2 : 0, run.seed.toString(36),
       Math.round(run.T * 10).toString(36), run.wpm, run.acc, packGhost(run.pos), encodeURIComponent(name)].join('.');
   }
   function readChallenge() {
@@ -1717,18 +2144,21 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     const p = m[1].split('.');
     if (p[0] !== '1' || p.length < 9) return null;
     const level = parseInt(p[1], 10) - 1, seed = parseInt(p[4], 36), T = parseInt(p[5], 36) / 10;
+    const tw = /^\d+-(\d+)$/.exec(p[1]);   // 活动关卡的难度
     const pos = unpackGhost(p[8]);
     if (!LEVELS[level] || !/^[ce]$/.test(p[2]) || !isFinite(seed) || !(T > 1 && T < 300) || !pos) return null;
+    const expired = !!LEVELS[level].event && level !== EVENT_IDX;   // 来自已经结束（或还没开始）的限时活动
+    const lvT = LEVELS[level], target = lvT.event && tw ? clampW(lvT, +tw[1]) : lvT.wpm;
     if (Math.abs(pos.length - 2 - Math.floor(T / GHOST_STEP)) > 2) return null;   // 曲线长度和用时对不上，当作坏链接
     let name = '';
     try { name = decodeURIComponent(p.slice(9).join('.')).trim().slice(0, 12); } catch (e) {}
     return { level, role: p[2] === 'c' ? 'chase' : 'escape', sym: p[3] === '1', touch: p[3] === '2', seed, T, pos,
-      wpm: parseInt(p[6], 10) || 0, acc: parseInt(p[7], 10) || 0, name: name || t('friend'), challenge: true };
+      wpm: parseInt(p[6], 10) || 0, acc: parseInt(p[7], 10) || 0, name: name || t('friend'), challenge: true, expired, target };
   }
   challenge = readChallenge();
   window.addEventListener('hashchange', () => { challenge = readChallenge(); if (state === 'menu') refreshMenu(); });
   function acceptChallenge() {
-    if (!challenge) return;
+    if (!challenge || challenge.expired) return;
     save.mode = 'campaign'; role = challenge.role; levelIdx = challenge.level; ghostSrc = challenge;
     startGame();
   }
@@ -1741,26 +2171,27 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
   // ---------- 菜单 ----------
   const starStr = n => '★★★'.split('').map((s, i) => i < n ? s : `<i>${s}</i>`).join('');
   const levelsEl = $('levels');
-  LEVELS.forEach((lv, i) => {
+  LEVELS.slice(0, REG).forEach((lv, i) => {
     const b = document.createElement('button');
     b.className = 'tile';
     b.onclick = () => { if (i < save.unlocked) { levelIdx = i; refreshMenu(); } };
     levelsEl.appendChild(b);
   });
+  $('event').onclick = () => { if (EVENT_IDX >= 0) { levelIdx = EVENT_IDX; refreshMenu(); } };
   document.querySelectorAll('#roles .card').forEach(c => c.onclick = () => { role = c.dataset.role; refreshMenu(); });
   document.querySelectorAll('#modes button').forEach(b => b.onclick = () => { save.mode = b.dataset.mode; persist(); refreshMenu(); });
 
   // Zen 的几组选项
   const ZEN_OPTS = {
     char: ['cop', 'thief'],
-    theme: ['day', 'dusk', 'snow', 'night'],
+    theme: ['day', 'dusk', 'snow', 'night', 'xmas'],
     track: ['clover', 'bean', 'block', 'star'],
-    source: ['prose', 'easy', 'symbols', 'custom'],
+    source: ['prose', 'easy', 'symbols', 'custom', 'magi'],
   };
   for (const key in ZEN_OPTS) {
     ZEN_OPTS[key].forEach(value => {
       const b = document.createElement('button');
-      b.className = 'chip'; b.dataset.value = value;
+      b.className = 'chip' + (ZEN_EVENT[key] === value ? ' ev-chip' + (EVENT_IDX < 0 ? ' hidden' : '') : ''); b.dataset.value = value;
       b.onclick = () => { save.zen[key] = value; persist(); refreshMenu(); };
       $('z-' + key).appendChild(b);
     });
@@ -1770,8 +2201,22 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     .replace(/…/g, '...').replace(/\s+/g, ' ').replace(/[^\x20-\x7e]/g, '').replace(/ +/g, ' ').replace(/ ([,.;:!?])/g, '$1').trim();
   $('z-custom').value = save.zen.custom;
   $('z-custom').oninput = () => { save.zen.custom = $('z-custom').value; persist(); refreshZenNote(); };
+  const zenStoryOf = name => save.zenStory[name] = Object.assign({ pos: 0, t: 0, chars: 0, errors: 0, best: null }, save.zenStory[name]);
+  $('z-restart').onclick = () => {
+    const zs = zenStoryOf(save.zen.source);
+    Object.assign(zs, { pos: 0, t: 0, chars: 0, errors: 0 }); persist(); refreshZenNote(); $('z-restart').blur();
+  };
   function refreshZenNote() {
     const custom = save.zen.source === 'custom', n = cleanCustom(save.zen.custom).length;
+    const story = window.STORIES[save.zen.source];
+    $('z-story').classList.toggle('hidden', !story);
+    if (story) {
+      const zs = zenStoryOf(save.zen.source), n = window.storyIndex(save.zen.source).starts.length;
+      $('z-story-note').innerHTML = t('zenStoryNote', story.author, story.title, story.year) +
+        (zs.pos ? '<br>' + t('zenStoryProg', Math.round(zs.pos / n * 100), clockStr(zs.t)) : '') +
+        (zs.best ? '<br>' + t('zenStoryBest', clockStr(zs.best.t), zs.best.wpm, zs.best.acc, fmtDay(zs.best.date)) : '');
+      $('z-restart').classList.toggle('hidden', !zs.pos);
+    }
     $('z-custom').classList.toggle('hidden', !custom);
     $('z-note').className = 'need' + (custom && n < 20 ? ' warn' : '');
     $('z-note').textContent = !custom ? ''
@@ -1780,15 +2225,21 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
 
   function refreshMenu() {
     const zen = save.mode === 'zen', drill = save.mode === 'drill';
-    document.querySelectorAll('#modes button').forEach(b => b.classList.toggle('active', b.dataset.mode === save.mode));
+    document.querySelectorAll('#modes button').forEach(b => {
+      b.classList.toggle('active', b.dataset.mode === save.mode);
+      b.classList.toggle('ev-dot', EVENT_IDX >= 0 && b.dataset.mode === 'campaign' && save.mode !== 'campaign');
+    });
     $('pane-campaign').classList.toggle('hidden', zen || drill);
     $('pane-zen').classList.toggle('hidden', !zen);
     $('pane-drill').classList.toggle('hidden', !drill);
-    $('start').innerHTML = t(drill ? 'startDrill' : zen ? 'startRun' : 'startGame') + (challenge ? '' : ' <kbd>Enter</kbd>');
+    const live = challenge && !challenge.expired;
+    $('start').innerHTML = t(drill ? 'startDrill' : zen ? 'startRun' : 'startGame') + (live ? '' : ' <kbd>Enter</kbd>');
     $('chal-banner').classList.toggle('hidden', !challenge);
+    $('chal-go').classList.toggle('hidden', !live);
     if (challenge) {
       const c = challenge;
-      $('chal-info').innerHTML = t('chalInfo', esc(c.name), c.level + 1, lvName(LEVELS[c.level]), c.role, secs(c.T), c.wpm, c.acc);
+      $('chal-info').innerHTML = c.expired ? t('chalExpired', esc(c.name), lvName(LEVELS[c.level]))
+        : t('chalInfo', esc(c.name), lvLabel(c.level, c.target), c.role, secs(c.T), c.wpm, c.acc);
     }
     $('tip').innerHTML = t(zen || drill ? 'tipZen' : 'tipCampaign', TOUCH);
     if (drill) {
@@ -1810,21 +2261,64 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
       return;
     }
     document.querySelectorAll('#roles .card').forEach(c => c.classList.toggle('active', c.dataset.role === role));
+    const ev = $('event');
+    ev.classList.toggle('hidden', EVENT_IDX < 0);
+    if (EVENT_IDX >= 0) {
+      const lv = LEVELS[EVENT_IDX];
+      ev.className = 'tile event' + (levelIdx === EVENT_IDX ? ' active' : '');
+      const top = bestDiff(lv);
+      ev.innerHTML = `<span class="ev-tag">${t('eventTag', fmtDate(lv.event.from), fmtDate(lv.event.to))}</span>` +
+        `<b>🎄 ${lvName(lv)}</b><small>${diffName(lv, chosenWpm(lv))}</small>` +
+        `<span class="stars">${top ? `<em>${t('evBest', diffName(lv, top.w))}</em>` + starStr(top.stars) : starStr(0)}</span>`;
+    }
+    refreshDiff();
     [...levelsEl.children].forEach((c, i) => {
-      const lv = LEVELS[i], locked = i >= save.unlocked;
+      const lv = LEVELS[i], locked = isLocked(i);
       c.className = 'tile' + (i === levelIdx ? ' active' : '') + (locked ? ' locked' : '');
       c.innerHTML = `<b>${i + 1}. ${lvName(lv)}</b><small>${lv.wpm} WPM</small>` +
         `<span class="stars">${locked ? '🔒' : starStr(save.stars[lv.id] || 0)}</span>`;
     });
-    const lv = LEVELS[levelIdx], b = save.best[lv.id];
-    $('symbols').className = 'toggle' + (save.symbols ? ' on' : '');
+    const lv = LEVELS[levelIdx], w = chosenWpm(lv), b = save.best[recKey(lv, w)];
+    $('symbols').className = 'toggle' + (save.symbols ? ' on' : '') + (lv.story ? ' hidden' : '');
     $('symbols').textContent = t(save.symbols ? 'symbolsOn' : 'symbolsOff');
-    const gh = save.ghosts[ghostKey(lv, save.symbols)];
+    const gh = save.ghosts[ghostKey(lv, save.symbols, w)];
     $('ghost').className = 'toggle' + (save.ghost ? ' on' : '');
     $('ghost').textContent = !save.ghost ? t('ghostOff') : gh ? t('ghostOn', secs(gh.t / 10)) : t('ghostOnEmpty');
-    $('need').textContent = t('need', lv.wpm, lv.wpm * 5) + (b ? t('needBest', b) : '');
+    $('need').textContent = t('need', w, w * 5) + (b ? t('needBest', b) : '');
     W.build(lv.theme, lv.track);
   }
+  // 难度面板：只在选中活动关卡时出现。几档固定难度 + "自定义"（带滑块）
+  function refreshDiff() {
+    const lv = LEVELS[levelIdx], show = !!lv.diffs && levelIdx === EVENT_IDX;
+    $('ev-diff').classList.toggle('hidden', !show);
+    if (!show) return;
+    const d = diffOf(lv), box = $('diff-chips');
+    if (box.dataset.lv !== lv.id || box.dataset.lang !== window.I18N.lang) {   // 换了活动或语言才重建按钮
+      box.dataset.lv = lv.id; box.dataset.lang = window.I18N.lang;
+      box.innerHTML = '';
+      [...Object.keys(lv.diffs), 'custom'].forEach(mode => {
+        const b = document.createElement('button');
+        b.className = 'chip'; b.dataset.mode = mode;
+        b.innerHTML = t('diff.' + mode) + (mode === 'custom' ? '' : ` <small>${lv.diffs[mode]}</small>`);
+        b.onclick = () => { diffOf(lv).mode = mode; persist(); refreshMenu(); };
+        box.appendChild(b);
+      });
+      $('diff-range').min = lv.range[0]; $('diff-range').max = lv.range[1];
+    }
+    [...box.children].forEach(b => b.classList.toggle('active', b.dataset.mode === d.mode));
+    $('diff-custom').classList.toggle('hidden', d.mode !== 'custom');
+    $('diff-range').value = d.custom; $('diff-val').textContent = d.custom + ' WPM';
+    $('story-note').classList.toggle('hidden', !lv.story);
+    if (lv.story) {
+      const st = window.STORIES[lv.story], n = window.storyIndex(lv.story).starts.length, at = (save.story[lv.story] || 0) % n;
+      $('story-note').innerHTML = t('storyNote', st.author, st.title, st.year, Math.round(at / n * 100));
+    }
+  }
+  $('diff-range').oninput = () => {
+    const lv = LEVELS[levelIdx]; if (!lv.diffs) return;
+    diffOf(lv).custom = clampW(lv, +$('diff-range').value); persist(); refreshMenu();
+  };
+  $('diff-range').onchange = () => $('diff-range').blur();   // 松手后交还键盘：Enter 照常开始游戏
   refreshMenu();
   // 切换界面语言：固定文字由 I18N 换掉，菜单里拼出来的文字重画一遍；挑战横幅里对方的默认称呼也要按新语言重新读
   document.querySelectorAll('#lang button').forEach(b => b.onclick = () => {
@@ -1857,7 +2351,7 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     setKb(false);
     clearItems(); resetRunners();
     state = 'menu'; g = null; ghostSrc = null;
-    if (levelIdx >= save.unlocked) levelIdx = save.unlocked - 1;   // 挑战可能发生在还没解锁的关卡，回菜单时退回来
+    if (isLocked(levelIdx)) levelIdx = save.unlocked - 1;   // 挑战可能发生在还没解锁的关卡，回菜单时退回来
     $('menu').classList.remove('hidden');
     ['result', 'hud', 'countdown'].forEach(id => $(id).classList.add('hidden'));
     W.siren.intensity = 0;
@@ -1873,7 +2367,7 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
       : t('noWeak')) + '</p>';
   }
   function nextLevel() {
-    if (levelIdx < LEVELS.length - 1 && levelIdx + 1 < save.unlocked) levelIdx++;
+    if (levelIdx < REG - 1 && levelIdx + 1 < save.unlocked) levelIdx++;
     startGame();
   }
 
@@ -1918,7 +2412,8 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
   function startCampaign() {
     const lv = LEVELS[levelIdx];
     W.build(lv.theme, lv.track);
-    const need = lv.wpm * 5 / 60; // 每秒键数
+    const target = ghostSrc ? ghostSrc.target || lv.wpm : chosenWpm(lv);   // 这一局的目标速度
+    const need = target * 5 / 60; // 每秒键数
     let F, h, oppSpeed, playerStart, oppStart;
     if (role === 'chase') {       // 你从起点追，对手领先
       F = need * ROUND_SECONDS; h = F * HEAD_START;
@@ -1929,13 +2424,29 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     }
     // 幽灵：接受了挑战就用对方那一局（连文本也用同一段）；否则用自己在这一关最快的一局
     // 触屏键盘打不了符号和大写：触屏上不出符号文本；手机发来的挑战，电脑上也按手机的规则处理文字，两边才是同一段
-    const sym = (ghostSrc ? ghostSrc.sym : save.symbols) && !TOUCH;
+    const sym = (ghostSrc ? ghostSrc.sym : save.symbols) && !TOUCH && !lv.story;   // 故事关卡不受"符号特训"影响
     const touch = TOUCH || !!(ghostSrc && ghostSrc.touch);
-    const seed = ghostSrc ? ghostSrc.seed : Math.floor(Math.random() * 0x7fffffff);
-    const own = save.ghost && save.ghosts[ghostKey(lv, sym)];
+    // 故事关卡：开局句子由种子决定（种子 ÷ 句子数 的余数），挑战双方因此打同一段。
+    // 自己玩时挑一个余数正好是"上次读到的那一句"的种子，就能接着往下读
+    const nStory = lv.story ? window.storyIndex(lv.story).starts.length : 0;
+    const seed = ghostSrc ? ghostSrc.seed
+      : lv.story ? Math.floor(Math.random() * 1e6) * nStory + (save.story[lv.story] || 0) % nStory
+      : Math.floor(Math.random() * 0x7fffffff);
+    const own = save.ghost && save.ghosts[ghostKey(lv, sym, target)];
     const ghost = ghostSrc || (own && unpackGhost(own.d) ? { T: own.t / 10, pos: unpackGhost(own.d), name: '' } : null);
-    let text = window.buildText(sym ? 'symbols' : lv.pool, Math.ceil(F) + 90, 46, seeded(seed)).text;
-    if (touch) text = touchText(text);
+    let text, marks = null;
+    if (lv.story) {            // 逐句加工再拼起来，记下每一句从第几个字开始，局后据此保存阅读进度
+      marks = []; text = '';
+      window.storyPieces(lv.story, seed % nStory, Math.ceil(F) + 90).forEach(({ s, i }) => {
+        const piece = touch ? touchText(s) : s;
+        if (!piece) return;
+        if (text) text += ' ';
+        marks.push({ at: text.length, i }); text += piece;
+      });
+    } else {
+      text = window.buildText(sym ? 'symbols' : lv.pool, Math.ceil(F) + 90, 46, seeded(seed)).text;
+      if (touch) text = touchText(text);
+    }
     const items = pickItems(text, lv.items, F - playerStart);
     const itemAt = {};
     items.forEach(it => {
@@ -1945,7 +2456,7 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
       $('progress').appendChild(it.pin);
     });
     g = Object.assign(baseGame(), {
-      zen: false, lv, F, oppSpeed, playerStart, oppStart, unit: W.lapLen / F, text, items, itemAt,
+      zen: false, lv, target, marks, F, oppSpeed, playerStart, oppStart, unit: W.lapLen / F, text, items, itemAt,
       oppClock: 0, freezeT: 0, oppBack: 0, oppBackDisp: 0, spinT: 0,
       errSince: 0, errLimit: Math.max(ERR_MIN, Math.min(ERR_MAX, Math.round((F - playerStart) * ERR_RATE))),
       gap0: Math.abs(oppStart - playerStart), disp: playerStart, oppPos: oppStart, oppDisp: oppStart, count: 3.2,
@@ -1976,7 +2487,25 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     const custom = fix(cleanCustom(z.custom));
     const source = (z.source === 'custom' && custom.length < 20) || (z.source === 'symbols' && TOUCH) ? 'prose' : z.source;
     let bag = [];
+    // 整篇故事：从上次读到的那一句接着打，读到结尾就结束（不循环）
+    const story = !drill && window.STORIES[source] ? source : null;
+    const idx = story && window.storyIndex(story), zs = story && zenStoryOf(story);
+    const marks = [];      // 每句开头在 g.text 里的位置 { at, i }，用来记进度
+    let si = story ? zs.pos % idx.starts.length : 0, len = 0;
+    const storyChunk = () => {
+      let out = '';
+      while (si < idx.starts.length && out.length < 200) {
+        const a = idx.starts[si], b = si + 1 < idx.starts.length ? idx.starts[si + 1] : idx.text.length;
+        const sen = fix(idx.text.slice(a, b).trim());
+        if (out) out += ' ';
+        marks.push({ at: len ? len + 1 + out.length : out.length, i: si });
+        out += sen; si++;
+      }
+      if (out) len += (len ? 1 : 0) + out.length;
+      return out;
+    };
     const nextChunk = () => {
+      if (story) return storyChunk();
       if (drill) {              // 特训：每接一段新文本都按最新统计重新挑词，弱键变了文本也跟着变
         const d = KS.drillText(save.keys, 26);
         $('z-focus').innerHTML = d.focus.length ? t('focus') + d.focus.map(f => `<b>${KS.label(f.key)}</b>`).join('') : t('focusNone');
@@ -1992,9 +2521,11 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     (z.char === 'cop' ? W.thief : W.cop).visible = false;
     g = Object.assign(baseGame(), {
       zen: true, drill: !!drill, F: ZEN_LAP, unit: W.lapLen / ZEN_LAP, playerStart: 0, text: nextChunk(), nextChunk,
+      story, marks, reached: null, storyEnd: false,
       disp: 0, me, opp: null, keyTimes: [], samples: [], sampleT: 0, peak: 0, paused: true, lastKeyClock: -99,
     });
-    $('hud').className = 'zen';
+    $('hud').className = g.story ? 'zen story' : 'zen';
+    if (g.story) $('z-prog-label').textContent = t('source.' + g.story);
     $('esc-hint').textContent = t('escFinish');
     $('countdown').classList.add('hidden');
     state = 'playing';
@@ -2054,6 +2585,14 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
       g.typed++; g.lastWrong = false;
       g.streak++; if (g.streak > g.bestStreak) g.bestStreak = g.streak;
       if (g.zen) g.keyTimes.push(g.t);
+      if (g.story) {
+        const m = g.marks.find(m => m.at === g.typed);
+        if (m) g.reached = { i: m.i, t: g.t, chars: g.typed, errors: g.errors };   // 刚好打到一句的开头
+        if (g.storyEnd && g.typed === g.text.length) {
+          renderLine(); g.reached = { i: 0, t: g.t, chars: g.typed, errors: g.errors, done: true };
+          finishZen(); return true;
+        }
+      }
       beep(520 + Math.random() * 60, 0.03, 'triangle', 0.05);
       if (it && it.state === 'pending' && g.typed === it.end) collect(it);
     } else {
@@ -2079,7 +2618,7 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.key === 'Escape') { escapeAction(); return; }
     if (e.key === 'Enter') {
-      if (state === 'menu') { e.preventDefault(); if (challenge) acceptChallenge(); else startGame(); }
+      if (state === 'menu') { e.preventDefault(); if (challenge && !challenge.expired) acceptChallenge(); else startGame(); }
       else if (state === 'over') {
         e.preventDefault();
         if ($('result').classList.contains('hidden')) g.overT = 99;       // 跳过结局动画
@@ -2196,7 +2735,12 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
   const acc = () => g.typed + g.errors ? Math.round(g.typed / (g.typed + g.errors) * 100) : 100;
   const gap = () => Math.abs(g.oppPos - mePos());
   const pct = p => `calc(${Math.min(1, Math.max(0, p / g.F)).toFixed(4)} * (100% - 14px))`;
-  const clockStr = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  // 一小时以上显示成 1:02:03
+  function clockStr(s) {
+    const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = String(Math.floor(s % 60)).padStart(2, '0');
+    return h ? `${h}:${String(m).padStart(2, '0')}:${ss}` : `${m}:${ss}`;
+  }
+  function fmtDay(ms) { const d = new Date(ms); return t('dayFmt', d.getFullYear(), d.getMonth() + 1, d.getDate()); }
   // Zen 的实时速度：最近 10 秒打对的键数
   function instWpm() {
     const win = Math.min(10, Math.max(3, g.t));
@@ -2219,6 +2763,17 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
       $('z-avg').textContent = wpm(); $('z-peak').textContent = peakWpm(); $('z-acc').textContent = acc();
       $('z-chars').textContent = g.typed; $('z-streak').textContent = g.streak; $('z-best').textContent = g.bestStreak;
       $('z-time').textContent = clockStr(g.t); $('z-laps').textContent = (g.typed / ZEN_LAP).toFixed(1);
+      if (g.story) {
+        // 整篇的进度：当前这句在原文里的位置，加上这句里已经打了多少（按比例，触屏简化过的文本长度和原文不同）
+        const { text, starts } = window.storyIndex(g.story);
+        let k = 0; while (k + 1 < g.marks.length && g.marks[k + 1].at <= g.typed) k++;
+        const m = g.marks[k], endAt = k + 1 < g.marks.length ? g.marks[k + 1].at - 1 : g.text.length;
+        const a = starts[m.i], b = m.i + 1 < starts.length ? starts[m.i + 1] : text.length;
+        const f = Math.min(1, Math.max(0, (g.typed - m.at) / Math.max(1, endAt - m.at)));
+        const p = (a + f * (b - a)) / text.length;
+        $('z-prog-fill').style.width = (p * 100).toFixed(2) + '%';
+        $('z-prog-pct').textContent = (p * 100).toFixed(1) + '%';
+      }
       $('zen').className = g.paused && state === 'playing' ? 'paused' : '';
       drawSpark();
       return;
@@ -2280,18 +2835,24 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     const lost = g.items.filter(it => it.state === 'lost').length;
     // 星级：赢 = 1 星；正确率 ≥ 95% = 2 星；再加上没有打丢任何道具 = 3 星
     const stars = win ? 1 + (a >= 95 ? 1 : 0) + (a >= 95 && lost === 0 ? 1 : 0) : 0;
-    const isLast = levelIdx === LEVELS.length - 1;
-    const official = levelIdx < save.unlocked;   // 挑战可能发生在还没解锁的关卡：那样的一局不动存档
+    const isEvent = !!lv.event, isLast = levelIdx === REG - 1;
+    const official = !isLocked(levelIdx);   // 挑战可能发生在还没解锁的关卡：那样的一局不动存档
     const gh = g.ghost, isChal = !!(gh && gh.challenge), who = gh && gh.name ? gh.name : t('yourBest');
     g.rec.push(Math.round(g.typed + g.bonus));
     // 赢了的一局可以做成挑战链接发给别人
-    g.run = win ? { level: levelIdx, role, sym: g.sym, touch: g.touch, seed: g.seed, T: g.t, pos: g.rec, wpm: w, acc: a } : null;
+    g.run = win ? { level: levelIdx, target: g.target, role, sym: g.sym, touch: g.touch, seed: g.seed, T: g.t, pos: g.rec, wpm: w, acc: a } : null;
     if (win && official) {
-      save.stars[lv.id] = Math.max(save.stars[lv.id] || 0, stars);
-      save.best[lv.id] = Math.max(save.best[lv.id] || 0, w);
-      save.unlocked = Math.min(LEVELS.length, Math.max(save.unlocked, levelIdx + 2));
-      const key = ghostKey(lv, g.sym), old = save.ghosts[key];
+      const rk = recKey(lv, g.target);   // 活动关卡按难度分开记
+      save.stars[rk] = Math.max(save.stars[rk] || 0, stars);
+      save.best[rk] = Math.max(save.best[rk] || 0, w);
+      if (!isEvent) save.unlocked = Math.min(REG, Math.max(save.unlocked, levelIdx + 2));   // 活动关卡不参与解锁
+      const key = ghostKey(lv, g.sym, g.target), old = save.ghosts[key];
       if (!old || g.t * 10 < old.t) save.ghosts[key] = { t: Math.round(g.t * 10), d: packGhost(g.rec) };   // 留下最快的一局当幽灵
+    }
+    if (lv.story && !isChal) {   // 故事读到哪了：打到的最后一个句首（还没打完一句就不动）
+      const reached = g.marks.filter(m => m.at > 0 && m.at <= g.typed).pop();
+      if (reached) save.story[lv.story] = reached.i;
+      persist();
     }
     const dt = gh ? Math.abs(g.t - gh.T) : 0, beat = !!(gh && win && g.t < gh.T);
     $('r-ghost').innerHTML = !gh ? ''
@@ -2302,14 +2863,15 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     saveKeys(); showSessionHeat();
     $('r-title').textContent = t((win ? 'win' : 'lose') + (role === 'chase' ? 'Chase' : 'Escape'));
     $('r-stars').innerHTML = starStr(stars);
-    $('r-sub').textContent = isChal ? t('subChal', gh.name, levelIdx + 1, lvName(lv))
-      : !win ? t('subLose', lv.wpm)
+    $('r-sub').textContent = isChal ? t('subChal', gh.name, lvLabel(levelIdx, g.target))
+      : !win ? t('subLose', g.target)
+      : isEvent ? t('subEvent', stars)
       : t(isLast ? 'subAll' : 'sub' + stars);
     const stats = [[w, 'WPM'], [a, t('stAcc')], [g.t.toFixed(1), t('stTime')], [`${got}/${g.items.length}`, t('stItems')]];
     setStats(stats);
     g.card = { title: $('r-title').textContent, stars, stats,
-      sub: t('cardSub', levelIdx + 1, lvName(lv), role) + (beat && isChal ? t('cardBeat', gh.name) : '') };
-    const canNext = win && !isLast && !isChal;
+      sub: t('cardSub', lvLabel(levelIdx, g.target), role) + (beat && isChal ? t('cardBeat', gh.name) : '') };
+    const canNext = win && !isLast && !isChal && !isEvent;
     $('next').classList.toggle('hidden', !canNext);
     $('again').className = canNext ? 'ghost' : '';
     $('again').innerHTML = t('again') + (canNext ? '' : ' <kbd>Enter</kbd>');
@@ -2327,9 +2889,30 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     $('r-title').textContent = t(g.drill ? 'titleDrill' : 'titleZen');
     $('r-stars').innerHTML = '';
     $('r-sub').textContent = t('subZen', peakWpm(), g.bestStreak, (g.typed / ZEN_LAP).toFixed(1));
-    const stats = [[wpm(), t('stAvg')], [acc(), t('stAcc')], [clockStr(g.t), t('stZenTime')], [g.typed, t('stChars')]];
+    let stats = [[wpm(), t('stAvg')], [acc(), t('stAcc')], [clockStr(g.t), t('stZenTime')], [g.typed, t('stChars')]];
+    let title = t(g.drill ? 'cardDrill' : 'cardZen'), cardSub = t('cardSubZen', peakWpm(), g.bestStreak);
+    if (g.story) {
+      // 进度只记到最后打到的那一句开头：没打完的半句下次重打，它花的时间也不算进去
+      const zs = zenStoryOf(g.story), st = window.STORIES[g.story], r = g.reached;
+      const n = window.storyIndex(g.story).starts.length;
+      if (r) { zs.t += r.t; zs.chars += r.chars; zs.errors += r.errors; zs.pos = r.i; }
+      const tot = { t: zs.t, wpm: zs.t > 0 ? Math.round(zs.chars / 5 / (zs.t / 60)) : 0,
+        acc: zs.chars + zs.errors ? Math.round(zs.chars / (zs.chars + zs.errors) * 100) : 100 };
+      if (r && r.done) {
+        const rec = !zs.best || tot.t < zs.best.t;
+        if (rec) zs.best = Object.assign({ date: Date.now() }, tot);
+        Object.assign(zs, { pos: 0, t: 0, chars: 0, errors: 0 });
+        $('r-title').textContent = t('titleStoryDone');
+        $('r-sub').textContent = t('subStoryDone', st.title, rec);
+        stats = [[clockStr(tot.t), t('stStoryTime')], [tot.wpm, t('stAvg')], [tot.acc, t('stAcc')], [clockStr(g.t), t('stThisRun')]];
+        title = t('titleStoryDone'); cardSub = t('cardStoryDone', st.author, st.title);
+      } else {
+        $('r-sub').textContent = t('subStoryProg', Math.round(zs.pos / n * 100), clockStr(zs.t));
+      }
+      persist();
+    }
     setStats(stats);
-    g.card = { title: t(g.drill ? 'cardDrill' : 'cardZen'), stars: null, stats, sub: t('cardSubZen', peakWpm(), g.bestStreak) };
+    g.card = { title, stars: null, stats, sub: cardSub };
     $('next').classList.add('hidden');
     $('r-ghost').innerHTML = ''; $('challenge').classList.add('hidden');
     $('again').className = '';
@@ -2376,7 +2959,7 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
   function openChal() {
     if (!g || !g.run) return;
     const r = g.run;
-    $('chal-desc').textContent = t('chalDesc', r.level + 1, lvName(LEVELS[r.level]), r.role, secs(r.T), r.wpm);
+    $('chal-desc').textContent = t('chalDesc', lvLabel(r.level, r.target), r.role, secs(r.T), r.wpm);
     $('chal-name').value = save.name;
     paintChal();
     $('chalbox').classList.remove('hidden');
@@ -2441,7 +3024,10 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
             if (g.t > 5 && w > g.peak) g.peak = w;
           }
         }
-        if (g.text.length - g.typed < 160) appendText(g.nextChunk());
+        if (!g.storyEnd && g.text.length - g.typed < 160) {
+          const c = g.nextChunk();
+          if (c) appendText(c); else g.storyEnd = !!g.story;   // 故事没有下一句了：打完最后一个字就结束
+        }
       }
       if (state === 'playing' && !zen) {
         if (g.count > 0) { g.count -= dt; if (g.count <= 0) $('countdown').classList.add('hidden'); }
@@ -2598,6 +3184,7 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
   function idle(fn) { (window.requestIdleCallback || (f => setTimeout(f, 200)))(fn, { timeout: 1500 }); }
   idle(() => { if (state === 'menu') W.prebuild(save.zen.theme, save.zen.track); });
   idle(() => { if (state === 'menu') W.prebuild(LEVELS[levelIdx].theme, LEVELS[levelIdx].track); });
+  if (EVENT_IDX >= 0) idle(() => { if (state === 'menu') W.prebuild(LEVELS[EVENT_IDX].theme, LEVELS[EVENT_IDX].track); });
 
   window.__game = { get state() { return state; }, get g() { return g; }, get save() { return save; } };
 })();
