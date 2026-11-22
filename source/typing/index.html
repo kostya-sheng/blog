@@ -174,7 +174,7 @@ html[lang="en"] .panel h2 { text-transform: uppercase; letter-spacing: 1.5px; }
 @keyframes shake { 25% { margin-left: -7px; } 75% { margin-left: 7px; } }
 #tape { position: absolute; left: 50%; top: 58%; white-space: pre; line-height: 1;
   font-size: clamp(22px, 3.2vw, 36px); font-weight: 600;
-  transform: translate(calc(var(--k, 0) * -1ch - 0.5ch), -50%); transition: transform .09s ease-out;
+  transform: translate(var(--x, 0), -50%); transition: transform .09s ease-out;
   text-shadow: 0 2px 6px rgba(0,0,0,.8); }
 #tape span { color: #f4f1ea; }
 #tape .done { color: #7be0a4; opacity: .4; }
@@ -2672,7 +2672,10 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     root.style.setProperty('--kb', (on ? $('kbd').offsetHeight : 0) + 'px');
     W.resize();
   }
-  window.addEventListener('resize', () => { if (TOUCH && document.documentElement.classList.contains('kb-on')) setKb(true); });
+  window.addEventListener('resize', () => {
+    if (TOUCH && document.documentElement.classList.contains('kb-on')) setKb(true);
+    if (g && g.spans) centerTape();         // 字号随屏宽变化，重新对准光标
+  });
 
   // 纸带：整段文本只建一次 span，之后每敲一键只改相关几个字符的样式，再整体左移一格。
   // Zen 会不停往后接文本：已经打过、移出画面很久的字要从左边删掉（g.cut 记删了多少个），
@@ -2696,7 +2699,15 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
     tape.innerHTML = spansOf(g.text);
     g.spans = tape.children; g.cut = 0;
     for (let i = 0; i < g.text.length; i++) paint(i);
-    tape.style.setProperty('--k', 0);
+    tape.style.setProperty('--x', 0);
+    centerTape();
+  }
+  // 把第 i 个字（缺省为光标处）的中心对准屏幕中线。用实际排版出来的位置，不用 1ch 估算：
+  // iOS 上 ui-monospace 的 1ch 比字的实际宽度窄，按 ch 走会越打越偏，光标最后跑出屏幕
+  function centerTape(i = g.typed) {
+    const el = g.spans[i - g.cut];
+    if (!el) return;
+    $('tape').style.setProperty('--x', -(el.offsetLeft + el.offsetWidth / 2) + 'px');
   }
   function appendText(str) {          // Zen：文本快打完时在后面接上下一段
     g.text += ' ' + str;
@@ -2714,11 +2725,11 @@ window.buildText = function (poolName, minLen, lineWidth, rnd) {
       tape.style.transition = 'none';
       for (let k = 0; k < n; k++) tape.firstChild.remove();
       g.cut += n;
-      tape.style.setProperty('--k', g.typed - 1 - g.cut);
+      centerTape(g.typed - 1);
       void tape.offsetWidth;
       tape.style.transition = '';
     }
-    tape.style.setProperty('--k', g.typed - g.cut);
+    centerTape();
   }
 
   // ---------- 声音 ----------
